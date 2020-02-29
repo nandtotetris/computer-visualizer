@@ -21,6 +21,19 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "standard": {
+    "env": [ "mocha"],
+    "globals": [
+      "describe",
+      "context",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",

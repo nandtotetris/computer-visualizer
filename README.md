@@ -31,7 +31,7 @@ A netlify [deployment](https://computer-visualizer.netlify.com/) link is automat
 
 ### Code Style
 
-Some developers feel the need to debate code style. Other engineers will use the project's style and get stuff done. We prefer engineers who get stuff done. Consistency is important, please follow these guidelines.
+Some developers feel the need to debate code style. Other developers will use the project's style and get stuff done. We prefer developers who get stuff done. Consistency is important, please follow these guidelines.
 
 We use the [JavaScript Standard Style](https://standardjs.com/) in our code. This is the style used by npm, GitHub, Zeit, MongoDB, Express, Electron, and many others. Be sure to use an automatic formatter like [standard-formatter](https://atom.io/packages/standard-formatter) for Atom and [vscode-standardjs](https://marketplace.visualstudio.com/items/chenxsan.vscode-standardjs) for Visual Studio Code.
 
@@ -88,11 +88,11 @@ As tasks move from **Backlog** to **In Progress** to **Needs Review** to **Needs
 
 ### Slack & Pull Requests
 
-We have a dedicated Slack channel for posting PRs: #engineering-prs. Every PR should be posted in this channel, allowing for others to know that you have work that needs review. Communicating updates about the PR will happen in a thread attached to the original Slack message for the PR.
+We have a dedicated Slack channel for posting PRs: #nand2tetris-prs. Every PR should be posted in this channel, allowing for others to know that you have work that needs review. Communicating updates about the PR will happen in a thread attached to the original Slack message for the PR.
 
 The process for posting a PR in Slack is:
 
-- Post your PR in #engineering-prs
+- Post your PR in #nand2tetris-prs
 - If you are the developer reviewing the PR, start a thread, saying: `@<developer_who_made_PR> reviewing`
 - If the PR needs to be pushed back, the developer reviewing responds in the thread with: `pushing back to In Progress @<developer_who_made_PR>`.
 - If all comments have been addressed, the developer responds in the thread with: `@<developer_who_made_the_comment> all comments have been addressed. Pushing back to Needs Review`
@@ -126,4 +126,4 @@ Commit types (e.g. `feat`, `fix`, `refactor`, `style`) are important because the
 
 ### Slack and Communication
 
-All communication about projects should be in #engineering. Do not use direct messages unless you are discussing something private. It is important that all conversations and questions (no matter how small they seem) should be in #engineering. We work as a team and that requires sharing, being transparent, and allowing the whole team to have a chance to answer your questions and to learn from the dialogue.
+All communication about projects should be in #nand2tetris. Do not use direct messages unless you are discussing something private. It is important that all conversations and questions (no matter how small they seem) should be in #nand2tetris. We work as a team and that requires sharing, being transparent, and allowing the whole team to have a chance to answer your questions and to learn from the dialogue.

@@ -22,7 +22,9 @@
     "extends": "react-app"
   },
   "standard": {
-    "env": [ "mocha"],
+    "env": [
+      "mocha"
+    ],
     "globals": [
       "describe",
       "context",
@@ -47,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "prettier": "^2.0.5",
     "standard": "^14.3.1"
   }
 }

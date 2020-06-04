@@ -49,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "lint-staged": "^10.2.9",
     "prettier": "^2.0.5",
     "standard": "^14.3.1"
   }

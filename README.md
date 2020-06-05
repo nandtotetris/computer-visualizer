@@ -27,6 +27,20 @@ Your app is ready to be deployed!
 
 A netlify [deployment](https://computer-visualizer.netlify.com/) link is automatically created for the latest commit on the master.
 
+### `npm run lint`
+
+To see if there is standard style guide error.
+To fix the errors run `npm run lint-fix`
+
+### `npm run format`
+
+To see if there is style(format) error.
+To format the styles run `npm run format-fix`
+
+### `npm run format-lint-fix`
+
+To fix both format and lint errors.
+
 ## Code Styling and Workflow Guide
 
 ### Code Style

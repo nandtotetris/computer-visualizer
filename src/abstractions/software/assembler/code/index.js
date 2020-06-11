@@ -1,16 +1,28 @@
-const DESTIONATION_CODES = Object.freeze({
-  NULL: '000',
+import { leftPadWithZeros, convertToBinary } from './utils'
+
+/**
+ * Proxy to check if key or its sort is found
+ * MAD or AMD
+ */
+const destinationCodeTrap = {
+  get: (obj, key) => {
+    key = key.toUpperCase()
+    return obj[key] ||
+      obj[[...key].sort().join('')]
+  }
+}
+
+const DESTIONATION_CODES = new Proxy(Object.freeze({
   M: '001',
   D: '010',
-  MD: '011',
+  DM: '011',
   A: '100',
   AM: '101',
   AD: '110',
-  AMD: '111'
-})
+  ADM: '111'
+}), destinationCodeTrap)
 
 const JUMP_CODES = Object.freeze({
-  NULL: '000',
   JGT: '001',
   JEQ: '010',
   JGE: '011',
@@ -20,7 +32,20 @@ const JUMP_CODES = Object.freeze({
   JMP: '111'
 })
 
-const COMPUTE_CODES = Object.freeze({
+/**
+ * Proxy to check if key or its reverse is found
+ * D+1 or 1+D
+ */
+const computeCodeTrap = {
+  get: (obj, key) => {
+    // if it is not type (A operator B), no need to check the revert
+    key = key.toUpperCase()
+    if (key.length !== 3) return obj[key]
+    return obj[key] || obj[[...key].reverse().join('')]
+  }
+}
+
+const COMPUTE_CODES = new Proxy(Object.freeze({
   0: '0101010',
   1: '0111111',
   '-1': '0111010',
@@ -49,7 +74,7 @@ const COMPUTE_CODES = Object.freeze({
   'M-D': '1000111',
   'D&M': '1000000',
   'D|M': '1010101'
-})
+}), computeCodeTrap)
 
 class Code {
   /**
@@ -57,6 +82,7 @@ class Code {
     * @returns {string} the binary code of the dest mnemonic
     */
   dest (mnemonic) {
+    if (!mnemonic) return '000'
     return DESTIONATION_CODES[mnemonic]
   }
 
@@ -73,7 +99,26 @@ class Code {
     * @returns {string} the binary code of the jump mnemonic
     */
   jump (mnemonic) {
-    return JUMP_CODES[mnemonic]
+    if (!mnemonic) return '000'
+    return JUMP_CODES[mnemonic.toUpperCase()]
+  }
+
+  /**
+   * @param {number} address decimal value of assembly address location
+   * @returns {string} machine code for A instruction
+   */
+  getAInstructionMachineCode (address) {
+    return '0' + leftPadWithZeros(convertToBinary(address), 15)
+  }
+
+  /**
+   * @param {string} comp computation compute code such as `A+D`
+   * @param {string} dest destination code such as `MD`
+   * @param {string} jump jump code such as `JGT`
+   * @returns {string} machine code for C instruction
+   */
+  getCInstructionMachineCode (comp, dest, jump) {
+    return '111' + this.comp(comp) + this.dest(dest) + this.jump(jump)
   }
 }
 

@@ -1,0 +1,44 @@
+export const MAX_ASSEMBLY_CODE = `
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/06/max/MaxL.asm
+
+// Symbol-less version of the Max.asm program.
+
+@0
+D=M
+@1
+D=D-M
+@10
+D;JGT
+@1
+D=M
+@12
+0;JMP
+@0
+D=M
+@2
+M=D
+@14
+0;JMP
+`
+
+export const MAX_MACHINE_CODE = `
+0000000000000000
+1111110000010000
+0000000000000001
+1111010011010000
+0000000000001010
+1110001100000001
+0000000000000001
+1111110000010000
+0000000000001100
+1110101010000111
+0000000000000000
+1111110000010000
+0000000000000010
+1110001100001000
+0000000000001110
+1110101010000111
+`

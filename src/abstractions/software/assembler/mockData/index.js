@@ -1,3 +1,4 @@
-import symbolLess from './symbolLess'
+import symbolLessAssembly from './symbolLessAssembly'
+import assembly from './assembly'
 
-export { symbolLess }
+export { symbolLessAssembly, assembly }

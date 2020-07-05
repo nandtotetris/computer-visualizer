@@ -91,10 +91,21 @@ class JackTokenizer {
   }
 
   /**
+   * Restore last current token
+   */
+  back () {
+    this.currentToken = this.tokens[--this.currentTokenIndex]
+  }
+
+  /**
    * @returns {TOKEN_TYPE} the type of the current token
    */
   tokenType () {
     return this.currentToken.type()
+  }
+
+  tokenValue () {
+    return this.currentToken.value()
   }
 
   /**

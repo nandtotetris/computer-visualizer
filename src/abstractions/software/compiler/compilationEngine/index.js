@@ -4,7 +4,7 @@ import { KEYWORDS } from '../tokenizer/utils/regex'
 import { TOKEN_TYPE } from '../tokenizer/types'
 // eslint-disable-next-line
 import Writer from '../writer'
-import { convertToArray, OPERATORS } from './utils'
+import { convertToArray, OPERATORS, UNARY_OPERATORS } from './utils'
 
 class CompilationEngine {
   /**
@@ -60,27 +60,17 @@ class CompilationEngine {
 
     this.compileType()
 
-    let isEnd = false
-    while (!isEnd) {
+    while (true) {
       this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
 
       tokenizer.advance()
-      const tokenValue = tokenizer.tokenValue()
-      switch (tokenValue) {
-        case ';':
-          this.write()
-          isEnd = true
-          break
-        case ',':
-          this.write()
-          break
-        default:
-          this.errorMiddleware({
-            [TOKEN_TYPE.SYMBOL]: [';', ',']
-          })
-          break
+      if (tokenizer.tokenValue() !== ',') {
+        tokenizer.back()
+        break
       }
+      this.write()
     }
+    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ';' })
     this.writer.writeEnd('classVarDec')
 
     this.compileClassVarDec()
@@ -159,7 +149,7 @@ class CompilationEngine {
   compileParameterList () {
     const { tokenizer } = this
     this.writer.writeStart('parameterList')
-    const isParameterEnd = this.lookAheadMiddleware(')')
+    const isParameterEnd = this.lookAhead(')')
     if (isParameterEnd) return this.writer.writeEnd('parameterList')
 
     while (true) {
@@ -180,7 +170,7 @@ class CompilationEngine {
    * `'var' type varName(',' varName)* ';'`
    */
   compileVarDec () {
-    if (!this.lookAheadMiddleware(KEYWORDS.VAR)) return
+    if (!this.lookAhead(KEYWORDS.VAR)) return
 
     this.writer.writeStart('varDec')
     this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.VAR })
@@ -207,7 +197,7 @@ class CompilationEngine {
     const validKeywords = [
       KEYWORDS.LET, KEYWORDS.IF, KEYWORDS.WHILE, KEYWORDS.DO, KEYWORDS.RETURN
     ]
-    if (!this.lookAheadMiddleware(validKeywords)) return
+    if (!this.lookAhead(validKeywords)) return
     this.writer.writeStart('statements')
 
     while (true) {
@@ -359,7 +349,7 @@ class CompilationEngine {
         this.tokenizer.back()
         break
       }
-      this.write()
+      this.writer.write(this.tokenizer.symbol(), this.tokenizer.tokenType())
     }
     this.writer.writeEnd('expression')
   }
@@ -376,11 +366,63 @@ class CompilationEngine {
    * varName'[' expression ']' | subroutineCall | '(' expression ')' | unaryOp term`
    */
   compileTerm () {
+    const { writer, tokenizer } = this
     this.writer.writeStart('term')
-    this.assertAndWrite({
-      [TOKEN_TYPE.IDENTIFIER]: null,
-      [TOKEN_TYPE.KEYWORD]: [KEYWORDS.THIS, KEYWORDS.TRUE, KEYWORDS.FALSE, KEYWORDS.NULL]
-    })
+    tokenizer.advance()
+    const type = tokenizer.tokenType()
+
+    switch (type) {
+      case TOKEN_TYPE.INTEGER_CONSTANT:
+        writer.write(tokenizer.intVal(), type)
+        break
+      case TOKEN_TYPE.STRING_CONSTANT:
+        writer.write(tokenizer.stringVal(), type)
+        break
+      case TOKEN_TYPE.KEYWORD:
+        tokenizer.back()
+        this.assertAndWrite({
+          [TOKEN_TYPE.KEYWORD]: [
+            KEYWORDS.TRUE, KEYWORDS.FALSE, KEYWORDS.NULL, KEYWORDS.THIS
+          ]
+        })
+        break
+      case TOKEN_TYPE.SYMBOL: {
+        const tokenValue = tokenizer.tokenValue()
+        if (tokenValue === '(') {
+          this.write()
+          this.compileExpression()
+          this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ')' })
+        } else if (UNARY_OPERATORS.includes(tokenValue)) {
+          this.write()
+          this.compileTerm()
+        } else {
+          throw new ParserException(
+            `Expected '(' OR '-, ~' but found ${type.toUpperCase()} '${tokenValue}'`
+          )
+        }
+      }
+        break
+      case TOKEN_TYPE.IDENTIFIER:
+        // is function/method call
+        if (this.lookAhead('.') || this.lookAhead('(')) {
+          tokenizer.back()
+          this.compileSubroutineCall()
+        } else if (this.lookAhead('[')) {
+          // array call
+          this.write()
+          this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '[' })
+          this.compileExpression()
+          this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ']' })
+        } else this.write()
+        break
+      default: {
+        const tokenTypes = [TOKEN_TYPE.INTEGER_CONSTANT, TOKEN_TYPE.STRING_CONSTANT, TOKEN_TYPE.IDENTIFIER]
+        const msg = `${tokenTypes.map(t => t.toUpperCase()).join(' | ')} | 'true, false, null, this' |
+        'varName[expression]' | 'subroutineCall' | '(expression)' | '-, ~'`
+        throw new ParserException(`Expected ${msg} but found ${type.toUpperCase()} ${tokenizer.tokenValue()}`)
+      }
+    }
+
     this.writer.writeEnd('term')
   }
 
@@ -390,7 +432,7 @@ class CompilationEngine {
    */
   compileExpressionList () {
     this.writer.writeStart('expressionList')
-    const isExpressionEnd = this.lookAheadMiddleware(')')
+    const isExpressionEnd = this.lookAhead(')')
     if (isExpressionEnd) return this.writer.writeEnd('expressionList')
     while (true) {
       this.compileExpression()
@@ -447,7 +489,7 @@ class CompilationEngine {
    * @param {string|string[]} expectedToken token we want to check
    * @returns {boolean} true if the next token is equal with the expected token
    */
-  lookAheadMiddleware (expectedToken) {
+  lookAhead (expectedToken) {
     this.tokenizer.advance()
     const value = this.tokenizer.tokenValue()
     this.tokenizer.back()

@@ -1,4 +1,4 @@
-export const SQUARE_MAIN_JACK = `
+export const MAIN_JACK = `
 // This file is part of www.nand2tetris.org
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
@@ -37,7 +37,1006 @@ class Main {
 }
 `
 
-export const SQUARE_MAIN_PARSE = `
+export const SQUARE_JACK = `
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+/// File name: projects/10/ExpressionLessSquare/Square.jack
+
+/** Expressionless version of projects/10/Square/Square.jack. */
+
+class Square {
+
+   field int x, y; 
+   field int size; 
+
+   constructor Square new(int Ax, int Ay, int Asize) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return x;
+   }
+
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   method void draw() {
+      do Screen.setColor(x);
+      do Screen.drawRectangle(x, y, x, y);
+      return;
+   }
+
+   method void erase() {
+      do Screen.setColor(x);
+      do Screen.drawRectangle(x, y, x, y);
+      return;
+   }
+
+   method void incSize() {
+      if (x) {
+         do erase();
+         let size = size;
+         do draw();
+      }
+      return;
+   }
+
+   method void decSize() {
+      if (size) {
+         do erase();
+         let size = size;
+         do draw();
+      }
+      return;
+   }
+
+   method void moveUp() {
+      if (y) {
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+         let y = y;
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+      }
+      return;
+   }
+
+   method void moveDown() {
+      if (y) {
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+         let y = y;
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+      }
+      return;
+   }
+
+   method void moveLeft() {
+      if (x) {
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+         let x = x;
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+      }
+      return;
+   }
+
+   method void moveRight() {
+      if (x) {
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+         let x = x;
+         do Screen.setColor(x);
+         do Screen.drawRectangle(x, y, x, y);
+      }
+      return;
+   }
+}  
+`
+
+export const SQUARE_GAME_JACK = `
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/10/ExpressionLessSquare/SquareGame.jack
+
+/** Expressionless version of projects/10/Square/SquareGame.jack. */
+
+class SquareGame {
+   field Square square; 
+   field int direction; 
+
+   constructor SquareGame new() {
+      let square = square;
+      let direction = direction;
+      return square;
+   }
+
+   method void dispose() {
+      do square.dispose();
+      do Memory.deAlloc(square);
+      return;
+   }
+
+   method void moveSquare() {
+      if (direction) { do square.moveUp(); }
+      if (direction) { do square.moveDown(); }
+      if (direction) { do square.moveLeft(); }
+      if (direction) { do square.moveRight(); }
+      do Sys.wait(direction);
+      return;
+   }
+
+   method void run() {
+      var char key;
+      var boolean exit;
+      
+      let exit = key;
+      while (exit) {
+         while (key) {
+            let key = key;
+            do moveSquare();
+         }
+
+         if (key) { let exit = exit; }
+         if (key) { do square.decSize(); }
+         if (key) { do square.incSize(); }
+         if (key) { let direction = exit; }
+         if (key) { let direction = key; }
+         if (key) { let direction = square; }
+         if (key) { let direction = direction; }
+
+         while (key) {
+            let key = key;
+            do moveSquare();
+         }
+      }
+      return;
+    }
+}
+`
+
+export const MAIN_TOKENS = `
+<tokens>
+<keyword> class </keyword>
+<identifier> Main </identifier>
+<symbol> { </symbol>
+<keyword> static </keyword>
+<keyword> boolean </keyword>
+<identifier> test </identifier>
+<symbol> ; </symbol>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<identifier> main </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<identifier> SquareGame </identifier>
+<identifier> game </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> game </identifier>
+<symbol> = </symbol>
+<identifier> game </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> game </identifier>
+<symbol> . </symbol>
+<identifier> run </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> game </identifier>
+<symbol> . </symbol>
+<identifier> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> function </keyword>
+<keyword> void </keyword>
+<identifier> test </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<keyword> int </keyword>
+<identifier> i </identifier>
+<symbol> , </symbol>
+<identifier> j </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<identifier> String </identifier>
+<identifier> s </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<identifier> Array </identifier>
+<identifier> a </identifier>
+<symbol> ; </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> i </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> s </identifier>
+<symbol> = </symbol>
+<identifier> i </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> s </identifier>
+<symbol> = </symbol>
+<identifier> j </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> a </identifier>
+<symbol> [ </symbol>
+<identifier> i </identifier>
+<symbol> ] </symbol>
+<symbol> = </symbol>
+<identifier> j </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> else </keyword>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> i </identifier>
+<symbol> = </symbol>
+<identifier> i </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> j </identifier>
+<symbol> = </symbol>
+<identifier> j </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> i </identifier>
+<symbol> = </symbol>
+<identifier> i </identifier>
+<symbol> | </symbol>
+<identifier> j </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>
+`
+
+export const SQUARE_TOKENS = `
+<tokens>
+<keyword> class </keyword>
+<identifier> Square </identifier>
+<symbol> { </symbol>
+<keyword> field </keyword>
+<keyword> int </keyword>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ; </symbol>
+<keyword> field </keyword>
+<keyword> int </keyword>
+<identifier> size </identifier>
+<symbol> ; </symbol>
+<keyword> constructor </keyword>
+<identifier> Square </identifier>
+<identifier> new </identifier>
+<symbol> ( </symbol>
+<keyword> int </keyword>
+<identifier> Ax </identifier>
+<symbol> , </symbol>
+<keyword> int </keyword>
+<identifier> Ay </identifier>
+<symbol> , </symbol>
+<keyword> int </keyword>
+<identifier> Asize </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> x </identifier>
+<symbol> = </symbol>
+<identifier> Ax </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> y </identifier>
+<symbol> = </symbol>
+<identifier> Ay </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> size </identifier>
+<symbol> = </symbol>
+<identifier> Asize </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<identifier> x </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Memory </identifier>
+<symbol> . </symbol>
+<identifier> deAlloc </identifier>
+<symbol> ( </symbol>
+<keyword> this </keyword>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> erase </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> incSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> erase </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> size </identifier>
+<symbol> = </symbol>
+<identifier> size </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> decSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> size </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> erase </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> size </identifier>
+<symbol> = </symbol>
+<identifier> size </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> draw </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> moveUp </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> y </identifier>
+<symbol> = </symbol>
+<identifier> y </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> moveDown </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> y </identifier>
+<symbol> = </symbol>
+<identifier> y </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> moveLeft </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> x </identifier>
+<symbol> = </symbol>
+<identifier> x </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> moveRight </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> x </identifier>
+<symbol> = </symbol>
+<identifier> x </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> setColor </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Screen </identifier>
+<symbol> . </symbol>
+<identifier> drawRectangle </identifier>
+<symbol> ( </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> , </symbol>
+<identifier> x </identifier>
+<symbol> , </symbol>
+<identifier> y </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>
+`
+
+export const SQUARE_GAME_TOKENS = `
+<tokens>
+<keyword> class </keyword>
+<identifier> SquareGame </identifier>
+<symbol> { </symbol>
+<keyword> field </keyword>
+<identifier> Square </identifier>
+<identifier> square </identifier>
+<symbol> ; </symbol>
+<keyword> field </keyword>
+<keyword> int </keyword>
+<identifier> direction </identifier>
+<symbol> ; </symbol>
+<keyword> constructor </keyword>
+<identifier> SquareGame </identifier>
+<identifier> new </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> square </identifier>
+<symbol> = </symbol>
+<identifier> square </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> direction </identifier>
+<symbol> = </symbol>
+<identifier> direction </identifier>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<identifier> square </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> dispose </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> Memory </identifier>
+<symbol> . </symbol>
+<identifier> deAlloc </identifier>
+<symbol> ( </symbol>
+<identifier> square </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> moveSquare </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> direction </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> moveUp </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> direction </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> moveDown </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> direction </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> moveLeft </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> direction </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> moveRight </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> do </keyword>
+<identifier> Sys </identifier>
+<symbol> . </symbol>
+<identifier> wait </identifier>
+<symbol> ( </symbol>
+<identifier> direction </identifier>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> method </keyword>
+<keyword> void </keyword>
+<identifier> run </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> var </keyword>
+<keyword> char </keyword>
+<identifier> key </identifier>
+<symbol> ; </symbol>
+<keyword> var </keyword>
+<keyword> boolean </keyword>
+<identifier> exit </identifier>
+<symbol> ; </symbol>
+<keyword> let </keyword>
+<identifier> exit </identifier>
+<symbol> = </symbol>
+<identifier> key </identifier>
+<symbol> ; </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<identifier> exit </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> key </identifier>
+<symbol> = </symbol>
+<identifier> key </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> moveSquare </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> exit </identifier>
+<symbol> = </symbol>
+<identifier> exit </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> decSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> do </keyword>
+<identifier> square </identifier>
+<symbol> . </symbol>
+<identifier> incSize </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> direction </identifier>
+<symbol> = </symbol>
+<identifier> exit </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> direction </identifier>
+<symbol> = </symbol>
+<identifier> key </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> direction </identifier>
+<symbol> = </symbol>
+<identifier> square </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> if </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> direction </identifier>
+<symbol> = </symbol>
+<identifier> direction </identifier>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<identifier> key </identifier>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> key </identifier>
+<symbol> = </symbol>
+<identifier> key </identifier>
+<symbol> ; </symbol>
+<keyword> do </keyword>
+<identifier> moveSquare </identifier>
+<symbol> ( </symbol>
+<symbol> ) </symbol>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+<keyword> return </keyword>
+<symbol> ; </symbol>
+<symbol> } </symbol>
+<symbol> } </symbol>
+</tokens>
+`
+
+export const MAIN_PARSE_TOKENS = `
 <class>
   <keyword> class </keyword>
   <identifier> Main </identifier>
@@ -245,109 +1244,7 @@ export const SQUARE_MAIN_PARSE = `
 </class>
 `
 
-export const SQUARE_SQUARE_JACK = `
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-/// File name: projects/10/ExpressionLessSquare/Square.jack
-
-/** Expressionless version of projects/10/Square/Square.jack. */
-
-class Square {
-
-   field int x, y; 
-   field int size; 
-
-   constructor Square new(int Ax, int Ay, int Asize) {
-      let x = Ax;
-      let y = Ay;
-      let size = Asize;
-      do draw();
-      return x;
-   }
-
-   method void dispose() {
-      do Memory.deAlloc(this);
-      return;
-   }
-
-   method void draw() {
-      do Screen.setColor(x);
-      do Screen.drawRectangle(x, y, x, y);
-      return;
-   }
-
-   method void erase() {
-      do Screen.setColor(x);
-      do Screen.drawRectangle(x, y, x, y);
-      return;
-   }
-
-   method void incSize() {
-      if (x) {
-         do erase();
-         let size = size;
-         do draw();
-      }
-      return;
-   }
-
-   method void decSize() {
-      if (size) {
-         do erase();
-         let size = size;
-         do draw();
-      }
-      return;
-   }
-
-   method void moveUp() {
-      if (y) {
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-         let y = y;
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-      }
-      return;
-   }
-
-   method void moveDown() {
-      if (y) {
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-         let y = y;
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-      }
-      return;
-   }
-
-   method void moveLeft() {
-      if (x) {
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-         let x = x;
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-      }
-      return;
-   }
-
-   method void moveRight() {
-      if (x) {
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-         let x = x;
-         do Screen.setColor(x);
-         do Screen.drawRectangle(x, y, x, y);
-      }
-      return;
-   }
-}  
-`
-
-export const SQUARE_SQUARE_PARSE = `
+export const SQUARE_PARSE_TOKENS = `
 <class>
   <keyword> class </keyword>
   <identifier> Square </identifier>
@@ -1317,69 +2214,7 @@ export const SQUARE_SQUARE_PARSE = `
 </class>
 `
 
-export const SQUARE_SQUARE_GAME_JACK = `
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/10/ExpressionLessSquare/SquareGame.jack
-
-/** Expressionless version of projects/10/Square/SquareGame.jack. */
-
-class SquareGame {
-   field Square square; 
-   field int direction; 
-
-   constructor SquareGame new() {
-      let square = square;
-      let direction = direction;
-      return square;
-   }
-
-   method void dispose() {
-      do square.dispose();
-      do Memory.deAlloc(square);
-      return;
-   }
-
-   method void moveSquare() {
-      if (direction) { do square.moveUp(); }
-      if (direction) { do square.moveDown(); }
-      if (direction) { do square.moveLeft(); }
-      if (direction) { do square.moveRight(); }
-      do Sys.wait(direction);
-      return;
-   }
-
-   method void run() {
-      var char key;
-      var boolean exit;
-      
-      let exit = key;
-      while (exit) {
-         while (key) {
-            let key = key;
-            do moveSquare();
-         }
-
-         if (key) { let exit = exit; }
-         if (key) { do square.decSize(); }
-         if (key) { do square.incSize(); }
-         if (key) { let direction = exit; }
-         if (key) { let direction = key; }
-         if (key) { let direction = square; }
-         if (key) { let direction = direction; }
-
-         while (key) {
-            let key = key;
-            do moveSquare();
-         }
-      }
-      return;
-    }
-}
-`
-
-export const SQUARE_SQUARE_GAME_PARSE = `
+export const SQUARE_GAME_PARSE_TOKENS = `
 <class>
   <keyword> class </keyword>
   <identifier> SquareGame </identifier>

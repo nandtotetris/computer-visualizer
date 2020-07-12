@@ -62,13 +62,13 @@ class JackTokenizer {
    */
   getTokenTypeByRegexCheck (tokenValue) {
     if (KEYWORD_REGEX.test(tokenValue)) return TOKEN_TYPE.KEYWORD
+    if (
+      STRING_CONSTANT_REGEX.test(tokenValue)
+    ) return TOKEN_TYPE.STRING_CONSTANT
     if (SYMBOL_REGEX.test(tokenValue)) return TOKEN_TYPE.SYMBOL
     if (
       INTEGER_CONSTANT_REGEX.test(tokenValue)
     ) return TOKEN_TYPE.INTEGER_CONSTANT
-    if (
-      STRING_CONSTANT_REGEX.test(tokenValue)
-    ) return TOKEN_TYPE.STRING_CONSTANT
     if (IDENTIFIER_REGEX.test(tokenValue)) return TOKEN_TYPE.IDENTIFIER
   }
 

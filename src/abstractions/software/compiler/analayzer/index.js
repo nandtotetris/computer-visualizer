@@ -1,12 +1,12 @@
-import Writer from '../writer'
 import File from '../../file'
 import CompilationEngine from '../compilationEngine'
+import VMWriter from '../vmWriter'
+import SymbolTable from '../symbolTable'
 
 class JackAnalayzer {
   /** @type {File []} */
   constructor (files) {
     this.files = files
-    this.writer = new Writer()
   }
 
   /**
@@ -14,13 +14,17 @@ class JackAnalayzer {
    */
   analayze () {
     const results = []
-    const { writer, files } = this
+    const { files } = this
+    const vmWriter = new VMWriter()
+    const symbolTable = new SymbolTable()
     let compilationEngine = null
     files.forEach(file => {
-      writer.reset()
-      compilationEngine = new CompilationEngine(file.getContent(), writer)
+      vmWriter.reset()
+      symbolTable.reset()
+
+      compilationEngine = new CompilationEngine(file.getContent(), vmWriter, symbolTable)
       compilationEngine.compileClass()
-      results.push(new File(file.getName(), writer.getXml()))
+      results.push(new File(file.getName(), vmWriter.getVM()))
     })
 
     return results

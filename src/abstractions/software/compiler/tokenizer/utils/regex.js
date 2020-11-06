@@ -6,11 +6,29 @@ export const COMMENT_REGEX = new RegExp(
   'g'
 )
 
-export const KEYWORDS = [
-  'class', 'constructor', 'function', 'method', 'field',
-  'static', 'var', 'int', 'char', 'boolean', 'void', 'true',
-  'false', 'null', 'this', 'let', 'do', 'if', 'else', 'while', 'return'
-]
+export const KEYWORDS = {
+  CLASS: 'class',
+  CONSTRUCTOR: 'constructor',
+  FUNCTION: 'function',
+  METHOD: 'method',
+  FIELD: 'field',
+  STATIC: 'static',
+  VAR: 'var',
+  INT: 'int',
+  CHAR: 'char',
+  BOOLEAN: 'boolean',
+  VOID: 'void',
+  TRUE: 'true',
+  FALSE: 'false',
+  NULL: 'null',
+  THIS: 'this',
+  LET: 'let',
+  DO: 'do',
+  IF: 'if',
+  ELSE: 'else',
+  WHILE: 'while',
+  RETURN: 'return'
+}
 
 export const SYMBOLS = [
   '{', '}', '(', ')', '[', ']', '.', ',', ';',
@@ -27,7 +45,7 @@ export const escapeTermsForRegex = terms => {
   return terms.map(term => `\\${term}`)
 }
 
-export const KEYWORD_REGEX = new RegExp(`\\b(${KEYWORDS.join('|')})\\b`)
+export const KEYWORD_REGEX = new RegExp(`\\b(${Object.values(KEYWORDS).join('|')})\\b`)
 export const SYMBOL_REGEX = new RegExp((escapeTermsForRegex(SYMBOLS)).join('|'))
 export const INTEGER_CONSTANT_REGEX = /\d+/
 export const STRING_CONSTANT_REGEX = /"[^"]*"/

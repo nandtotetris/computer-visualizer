@@ -70,7 +70,7 @@ describe('API COMMENT REGEX', () => {
 
 describe('KEYWORD REGEX', () => {
   it('should return true if token is keyword', () => {
-    KEYWORDS.forEach(keyword => {
+    Object.values(KEYWORDS).forEach(keyword => {
       expect(KEYWORD_REGEX.test(keyword)).toBe(true)
     })
   })

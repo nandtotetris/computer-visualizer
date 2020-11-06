@@ -4,10 +4,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-## Node Version Requirenmt
-
-Node 14.0.0 or later version
-
 ### `npm start`
 
 Runs the app in the development mode.<br />
@@ -44,6 +40,10 @@ To format the styles run `npm run format-fix`
 ### `npm run format-lint-fix`
 
 To fix both format and lint errors.
+
+## Node version requirement
+
+Node 14.0.0 or later version
 
 ## Code Styling and Workflow Guide
 

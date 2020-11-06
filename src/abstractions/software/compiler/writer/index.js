@@ -7,12 +7,12 @@ class Writer {
     this.xml += `<${tokenType}> ${token} </${tokenType}>\n`
   }
 
-  writeStart () {
-    this.xml += '<tokens>\n'
+  writeStart (type) {
+    this.xml += `<${type}>\n`
   }
 
-  writeEnd () {
-    this.xml += '</tokens>\n'
+  writeEnd (type) {
+    this.xml += `</${type}>\n`
   }
 
   getXml () {

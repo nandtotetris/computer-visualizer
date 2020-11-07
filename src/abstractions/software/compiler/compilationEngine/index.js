@@ -3,17 +3,45 @@ import ParserException from './parserException'
 import { KEYWORDS } from '../tokenizer/utils/regex'
 import { TOKEN_TYPE } from '../tokenizer/types'
 // eslint-disable-next-line
-import Writer from '../writer'
-import { convertToArray, OPERATORS, UNARY_OPERATORS } from './utils'
+import VMWriter from '../vmWriter'
+import {
+  convertToArray,
+  OPERATORS,
+  UNARY_OPERATORS,
+  VM_BINARY_COMMANDS_MAPPING,
+  VM_UNARY_COMMANDS_MAPPING
+} from './utils'
+import { KIND_TYPE } from '../symbolTable/types'
+import { SEGMENTS, COMMANDS } from '../vmWriter/types'
+import TokenException from '../tokenizer/TokenException'
 
 class CompilationEngine {
   /**
     * @param {string} jackCode jack code
-    * @param {Writer} writer writer
+    * @param {VMWriter} vmWritter vm writter
+    * @param {SymbolTable} symbolTable symbol table
   */
-  constructor (jackCode, writer) {
+  constructor (jackCode, vmWritter, symbolTable) {
     this.tokenizer = new JackTokenizer(jackCode)
-    this.writer = writer
+    this.vmWriter = vmWritter
+    this.symbolTable = symbolTable
+    this.className = ''
+    this.currentSubroutineName = ''
+    this.initializeWhile()
+    this.initializeIf()
+  }
+
+  initializeWhile () {
+    this.whileCounter = -1
+    this.whileStartLabel = 'WHILE_EXP'
+    this.whileEndLabel = 'WHILE_END'
+  }
+
+  initializeIf () {
+    this.ifCounter = -1
+    this.ifTrueLabel = 'IF_TRUE'
+    this.ifFalseLabel = 'IF_FALSE'
+    this.ifEndLabel = 'IF_END'
   }
 
   /**
@@ -21,23 +49,21 @@ class CompilationEngine {
    * `class className { classVarDec* subroutineDec* }`
    */
   compileClass () {
-    const { tokenizer, writer } = this
+    const { tokenizer } = this
     if (!tokenizer.hasMoreTokens()) return
     tokenizer.advance()
 
     this.errorMiddleware({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.CLASS })
-    writer.writeStart(KEYWORDS.CLASS)
-    this.write()
 
-    this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+    this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+    this.className = tokenizer.tokenValue()
 
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '{' })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
 
     this.compileClassVarDec()
     this.compileSubroutine()
 
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '}' })
-    writer.writeEnd(KEYWORDS.CLASS)
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
     // check if there is an extra token
     if (!tokenizer.hasMoreTokens()) return
     tokenizer.advance()
@@ -54,23 +80,23 @@ class CompilationEngine {
     if (
       !([KEYWORDS.STATIC, KEYWORDS.FIELD].includes(tokenizer.tokenValue()))
     ) return tokenizer.back()
-    this.writer.writeStart('classVarDec')
-    this.write()
+    const kind = tokenizer.tokenValue()
 
     this.compileType()
+    const type = tokenizer.tokenValue()
 
     while (true) {
-      this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+      this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+      const name = tokenizer.tokenValue()
+      this.symbolTable.define(name, type, kind)
 
       tokenizer.advance()
       if (tokenizer.tokenValue() !== ',') {
         tokenizer.back()
         break
       }
-      this.write()
     }
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ';' })
-    this.writer.writeEnd('classVarDec')
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ';' })
 
     this.compileClassVarDec()
   }
@@ -78,9 +104,14 @@ class CompilationEngine {
   /**
    * Compiles a type
    * `'int' | 'char' | 'boolean' | className(identifier)`
+   * [TOKEN_TYPE.IDENTIFIER]: null means the token type should be identifier,
+   * its value can be any.
+   * But for [TOKEN_TYPE.KEYWORD] : [KEYWORDS.INT, KEYWORDS.CHAR, KEYWORDS.BOOLEAN],
+   * it means it the token type should be a keyword and its values should be either
+   * int or char or boolean.
    */
   compileType () {
-    this.assertAndWrite({
+    this.assert({
       [TOKEN_TYPE.KEYWORD]: [KEYWORDS.INT, KEYWORDS.CHAR, KEYWORDS.BOOLEAN],
       [TOKEN_TYPE.IDENTIFIER]: null
     })
@@ -91,33 +122,48 @@ class CompilationEngine {
    * `(constructor | function | method) (void | type) subroutineName '('parameterList ')' subroutineBody`
    */
   compileSubroutine () {
-    const { tokenizer, writer } = this
+    const { tokenizer } = this
     tokenizer.advance()
     const validKeywords = [KEYWORDS.CONSTRUCTOR, KEYWORDS.FUNCTION, KEYWORDS.METHOD]
     if (
       !validKeywords.includes(tokenizer.tokenValue())
     ) return tokenizer.back()
-    writer.writeStart('subroutineDec')
-    this.write()
+    const subroutineType = tokenizer.tokenValue()
+    // reset label counters
+    this.whileCounter = -1
+    this.ifCounter = -1
+
+    this.symbolTable.startSubroutine()
 
     tokenizer.advance()
+    this.errorMiddleware({
+      [TOKEN_TYPE.KEYWORD]: [KEYWORDS.VOID, KEYWORDS.INT, KEYWORDS.CHAR, KEYWORDS.BOOLEAN],
+      [TOKEN_TYPE.IDENTIFIER]: null
+    })
+
     const value = tokenizer.tokenValue()
-    if (value === KEYWORDS.VOID) this.write()
-    else {
+    if (value !== KEYWORDS.VOID) {
       tokenizer.back()
       this.compileType()
     }
 
-    this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+    this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+    this.currentSubroutineName = tokenizer.tokenValue()
 
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '(' })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '(' })
 
+    // The first argument for methods should be the object reference,
+    // the method supposed to be operate.
+    // We should add an ARG variable to the subroutine symbol table,
+    // so that the index for method arguments will start from 1.
+    if (
+      subroutineType === KEYWORDS.METHOD
+    ) this.symbolTable.define('this', this.className, KIND_TYPE.ARG)
     this.compileParameterList()
 
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ')' })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ')' })
 
-    this.compileSubroutineBody()
-    writer.writeEnd('subroutineDec')
+    this.compileSubroutineBody(subroutineType)
     this.compileSubroutine()
   }
 
@@ -125,19 +171,45 @@ class CompilationEngine {
    * Compiles a subroutine body
    * `'{' varDec* statements '}'`
    */
-  compileSubroutineBody () {
-    this.writer.writeStart('subroutineBody')
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '{' })
+  compileSubroutineBody (subroutineType) {
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
     this.compileVarDec()
+    const numOfLocalVariables = this.symbolTable.varCount(KIND_TYPE.VAR)
+    this.vmWriter.writeFunction(this.getFunctionName(), numOfLocalVariables)
+    this.compileSubroutineType(subroutineType)
     this.compileStatements()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '}' })
-    this.writer.writeEnd('subroutineBody')
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
   }
 
-  assertAndWrite (expectedTypesandValues) {
+  /**
+   * Compiles a subroutine type
+   */
+  compileSubroutineType (type) {
+    switch (type) {
+      case KEYWORDS.CONSTRUCTOR: {
+        const numOfFields = this.symbolTable.varCount(KIND_TYPE.FIELD)
+        this.vmWriter.writePush(SEGMENTS.CONSTANT, numOfFields)
+        this.vmWriter.writeCall('Memory.alloc', 1)
+        this.vmWriter.writePop(SEGMENTS.POINTER, 0)
+      }
+        break
+      case KEYWORDS.METHOD:
+        this.vmWriter.writePush(SEGMENTS.ARGUMENT, 0)
+        this.vmWriter.writePop(SEGMENTS.POINTER, 0)
+        break
+    }
+  }
+
+  /**
+   * @returns {string} class name concat with current subroutine name
+   */
+  getFunctionName () {
+    return `${this.className}.${this.currentSubroutineName}`
+  }
+
+  assert (expectedTypesandValues) {
     this.tokenizer.advance()
     this.errorMiddleware(expectedTypesandValues)
-    this.write()
   }
 
   /**
@@ -147,21 +219,21 @@ class CompilationEngine {
    */
   compileParameterList () {
     const { tokenizer } = this
-    this.writer.writeStart('parameterList')
     const isParameterEnd = this.lookAhead(')')
-    if (isParameterEnd) return this.writer.writeEnd('parameterList')
+    if (isParameterEnd) return
 
     while (true) {
       this.compileType()
-      this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+      const type = this.tokenizer.tokenValue()
+      this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+      const name = tokenizer.tokenValue()
+      this.symbolTable.define(name, type, KIND_TYPE.ARG)
       tokenizer.advance()
       if (tokenizer.tokenValue() !== ',') {
         tokenizer.back()
         break
       }
-      this.write()
     }
-    this.writer.writeEnd('parameterList')
   }
 
   /**
@@ -171,20 +243,21 @@ class CompilationEngine {
   compileVarDec () {
     if (!this.lookAhead(KEYWORDS.VAR)) return
 
-    this.writer.writeStart('varDec')
-    this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.VAR })
+    this.assert({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.VAR })
     this.compileType()
+    const type = this.tokenizer.tokenValue()
     while (true) {
-      this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+      this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+      const name = this.tokenizer.tokenValue()
+      this.symbolTable.define(name, type, KIND_TYPE.VAR)
+
       this.tokenizer.advance()
       if (this.tokenizer.tokenValue() !== ',') {
         this.tokenizer.back()
         break
       }
-      this.write()
     }
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ';' })
-    this.writer.writeEnd('varDec')
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ';' })
     this.compileVarDec()
   }
 
@@ -197,7 +270,6 @@ class CompilationEngine {
       KEYWORDS.LET, KEYWORDS.IF, KEYWORDS.WHILE, KEYWORDS.DO, KEYWORDS.RETURN
     ]
     if (!this.lookAhead(validKeywords)) return
-    this.writer.writeStart('statements')
 
     while (true) {
       this.tokenizer.advance()
@@ -222,8 +294,6 @@ class CompilationEngine {
           break
       }
     }
-
-    this.writer.writeEnd('statements')
   }
 
   /**
@@ -231,11 +301,10 @@ class CompilationEngine {
    * `'do' subroutineCall ';'`
    */
   compileDo () {
-    this.writer.writeStart('doStatement')
-    this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.DO })
+    this.assert({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.DO })
     this.compileSubroutineCall()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ';' })
-    this.writer.writeEnd('doStatement')
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ';' })
+    this.vmWriter.writePop(SEGMENTS.TEMP, 0)
   }
 
   /**
@@ -243,17 +312,53 @@ class CompilationEngine {
    * `subroutineName '(' expressionList ')' | (className | varName) '.' subroutineName '(' expressionList ')'`
    */
   compileSubroutineCall () {
-    this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+    this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+    // Eg, `game.play()` `game` is the first idenifier, and
+    // `play` is the second identifier.
+    const firstIdentifier = this.tokenizer.tokenValue()
+    let callResult = null
+    let nArgs = 0
     this.tokenizer.advance()
     const value = this.tokenizer.tokenValue()
-    // method call
+    // method/function call
     if (value === '.') {
-      this.write()
-      this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
-    } else this.tokenizer.back()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '(' })
-    this.compileExpressionList()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ')' })
+      this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+      callResult = this.compileObjectCall(
+        firstIdentifier, this.tokenizer.tokenValue()
+      )
+    } else {
+      this.tokenizer.back()
+      callResult = this.compileMethodCall(this.tokenizer.tokenValue())
+    }
+
+    const [subroutineName, isMethodCall] = callResult
+
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '(' })
+    nArgs += this.compileExpressionList()
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ')' })
+
+    // If it is a method call the object reference the method suppposed to
+    // operate must be passed as a first argument, so nArgs should be increment by 1
+    this.vmWriter.writeCall(subroutineName, isMethodCall ? nArgs + 1 : nArgs)
+  }
+
+  compileMethodCall (methodName) {
+    this.vmWriter.writePush(SEGMENTS.POINTER, 0)
+    return [`${this.className}.${methodName}`, true]
+  }
+
+  compileObjectCall (objectName, methodName) {
+    // Is objectName a reference for an object
+    const segment = this.symbolTable.segmentOf(objectName)
+    if (segment) {
+      const objectIndex = this.symbolTable.indexOf(objectName)
+      const objectType = this.symbolTable.typeOf(objectName)
+      this.vmWriter.writePush(segment, objectIndex)
+      return [`${objectType}.${methodName}`, true]
+    }
+    // If objectName is not in the symbol table,
+    // `objectName` will be the class name.
+    return [`${objectName}.${methodName}`, false]
   }
 
   /**
@@ -261,21 +366,62 @@ class CompilationEngine {
    * `'let' varName ('[' expression ']')? '=' expression ';'`
    */
   compileLet () {
-    this.writer.writeStart('letStatement')
-    this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.LET })
-    this.assertAndWrite({ [TOKEN_TYPE.IDENTIFIER]: null })
+    this.assert({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.LET })
+    this.assert({ [TOKEN_TYPE.IDENTIFIER]: null })
+    const identifier = this.tokenizer.tokenValue()
     this.tokenizer.advance()
     const value = this.tokenizer.tokenValue()
+    let isVariableArray = false
     if (value === '[') {
-      this.write()
+      isVariableArray = true
       this.compileExpression()
-      this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ']' })
+      this.assert({ [TOKEN_TYPE.SYMBOL]: ']' })
+      this.compileArrayVariable(identifier)
     } else this.tokenizer.back()
 
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '=' })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '=' })
     this.compileExpression()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ';' })
-    this.writer.writeEnd('letStatement')
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ';' })
+    this.compileLetAssignment(isVariableArray, identifier)
+  }
+
+  /**
+   * Compiles array left expression.
+   * Eg, `let numbers[i] = 5`
+   * @param {string} array array identifier
+   * @returns {string} vm commands for array left expression
+   */
+  compileArrayVariable (array) {
+    this.vmWriter.writePush(
+      this.symbolTable.segmentOf(array),
+      this.symbolTable.indexOf(array)
+    )
+    this.vmWriter.writeArithmetic(COMMANDS.ADD)
+  }
+
+  /**
+   * Compiles array right expression(value of an array).
+   * Eg, `let age = numbers[3]`
+   * @param {string} array array identifier
+   * @returns {string} vm commands for array right expression
+   */
+  compileArrayValue (array) {
+    this.compileArrayVariable(array)
+    this.vmWriter.writePop(SEGMENTS.POINTER, 1)
+    this.vmWriter.writePush(SEGMENTS.THAT, 0)
+  }
+
+  compileLetAssignment (isArrayAssignment, variable) {
+    if (isArrayAssignment) {
+      this.vmWriter.writePop(SEGMENTS.TEMP, 0)
+      this.vmWriter.writePop(SEGMENTS.POINTER, 1)
+      this.vmWriter.writePush(SEGMENTS.TEMP, 0)
+      this.vmWriter.writePop(SEGMENTS.THAT, 0)
+      return
+    }
+
+    const index = this.symbolTable.indexOf(variable)
+    this.vmWriter.writePop(this.symbolTable.segmentOf(variable), index)
   }
 
   /**
@@ -283,15 +429,25 @@ class CompilationEngine {
    * `'while' '(' expression ')' '{' statements '}'`
    */
   compileWhile () {
-    this.writer.writeStart('whileStatement')
-    this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.WHILE })
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '(' })
+    ++this.whileCounter
+    const startLabel = this.whileStartLabel + this.whileCounter
+    const endLabel = this.whileEndLabel + this.whileCounter
+    this.vmWriter.writeLabel(startLabel)
+
+    this.assert({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.WHILE })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '(' })
     this.compileExpression()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ')' })
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '{' })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ')' })
+
+    this.vmWriter.writeArithmetic(COMMANDS.NOT)
+    this.vmWriter.writeIf(endLabel)
+
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
     this.compileStatements()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '}' })
-    this.writer.writeEnd('whileStatement')
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
+
+    this.vmWriter.writeGoto(startLabel)
+    this.vmWriter.writeLabel(endLabel)
   }
 
   /**
@@ -299,16 +455,15 @@ class CompilationEngine {
    * `'return' expression? ';'`
    */
   compileReturn () {
-    this.writer.writeStart('returnStatement')
-    this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.RETURN })
+    this.assert({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.RETURN })
     this.tokenizer.advance()
     const value = this.tokenizer.tokenValue()
     if (value !== ';') {
       this.tokenizer.back()
       this.compileExpression()
-      this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ';' })
-    } else this.write()
-    this.writer.writeEnd('returnStatement')
+      this.assert({ [TOKEN_TYPE.SYMBOL]: ';' })
+    } else this.vmWriter.writePush(SEGMENTS.CONSTANT, 0)
+    this.vmWriter.writeReturn()
   }
 
   /**
@@ -316,41 +471,56 @@ class CompilationEngine {
    * `'if' '(' expression ')' '{' statements '}' ('else' '{' statements '}')?`
    */
   compileIf () {
-    this.writer.writeStart('ifStatement')
-    this.assertAndWrite({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.IF })
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '(' })
+    ++this.ifCounter
+    const trueLabel = this.ifTrueLabel + this.ifCounter
+    const falseLabel = this.ifFalseLabel + this.ifCounter
+    const endLabel = this.ifEndLabel + this.ifCounter
+
+    this.assert({ [TOKEN_TYPE.KEYWORD]: KEYWORDS.IF })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '(' })
     this.compileExpression()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ')' })
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '{' })
+    this.assert({ [TOKEN_TYPE.SYMBOL]: ')' })
+
+    this.vmWriter.writeIf(trueLabel)
+    this.vmWriter.writeGoto(falseLabel)
+    this.vmWriter.writeLabel(trueLabel)
+
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
     this.compileStatements()
-    this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '}' })
+
+    this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
     this.tokenizer.advance()
     const value = this.tokenizer.tokenValue()
     if (value === KEYWORDS.ELSE) {
-      this.write()
-      this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '{' })
+      this.vmWriter.writeGoto(endLabel)
+      this.vmWriter.writeLabel(falseLabel)
+
+      this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
       this.compileStatements()
-      this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '}' })
-    } else this.tokenizer.back()
-    this.writer.writeEnd('ifStatement')
+      this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
+
+      this.vmWriter.writeLabel(endLabel)
+    } else {
+      this.vmWriter.writeLabel(falseLabel)
+      this.tokenizer.back()
+    }
   }
 
   /**
    * Compiles an expression
    */
   compileExpression () {
-    this.writer.writeStart('expression')
+    this.compileTerm()
     while (true) {
-      this.compileTerm()
       this.tokenizer.advance()
       const value = this.tokenizer.tokenValue()
       if (!OPERATORS.includes(value)) {
         this.tokenizer.back()
         break
       }
-      this.writer.write(this.tokenizer.symbol(), this.tokenizer.tokenType())
+      this.compileTerm()
+      this.vmWriter.writeArithmetic(VM_BINARY_COMMANDS_MAPPING[value])
     }
-    this.writer.writeEnd('expression')
   }
 
   /**
@@ -365,35 +535,29 @@ class CompilationEngine {
    * varName'[' expression ']' | subroutineCall | '(' expression ')' | unaryOp term`
    */
   compileTerm () {
-    const { writer, tokenizer } = this
-    this.writer.writeStart('term')
+    const { tokenizer } = this
     tokenizer.advance()
     const type = tokenizer.tokenType()
 
     switch (type) {
       case TOKEN_TYPE.INTEGER_CONSTANT:
-        writer.write(tokenizer.intVal(), type)
+        this.vmWriter.writePush(SEGMENTS.CONSTANT, tokenizer.intVal())
         break
       case TOKEN_TYPE.STRING_CONSTANT:
-        writer.write(tokenizer.stringVal(), type)
+        this.compileStringConstant(tokenizer.stringVal())
         break
       case TOKEN_TYPE.KEYWORD:
         tokenizer.back()
-        this.assertAndWrite({
-          [TOKEN_TYPE.KEYWORD]: [
-            KEYWORDS.TRUE, KEYWORDS.FALSE, KEYWORDS.NULL, KEYWORDS.THIS
-          ]
-        })
+        this.compileKeywordConstant()
         break
       case TOKEN_TYPE.SYMBOL: {
         const tokenValue = tokenizer.tokenValue()
         if (tokenValue === '(') {
-          this.write()
           this.compileExpression()
-          this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ')' })
+          this.assert({ [TOKEN_TYPE.SYMBOL]: ')' })
         } else if (UNARY_OPERATORS.includes(tokenValue)) {
-          this.write()
           this.compileTerm()
+          this.vmWriter.writeArithmetic(VM_UNARY_COMMANDS_MAPPING[tokenValue])
         } else {
           throw new ParserException(
             `Expected '(' OR '-, ~' but found ${type.toUpperCase()} '${tokenValue}'`
@@ -403,16 +567,19 @@ class CompilationEngine {
         break
       case TOKEN_TYPE.IDENTIFIER:
         // is function/method call
-        if (this.lookAhead('.') || this.lookAhead('(')) {
+        if (this.lookAhead(['.', '('])) {
           tokenizer.back()
           this.compileSubroutineCall()
         } else if (this.lookAhead('[')) {
+          const identifier = tokenizer.tokenValue()
           // array call
-          this.write()
-          this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: '[' })
+          this.assert({ [TOKEN_TYPE.SYMBOL]: '[' })
           this.compileExpression()
-          this.assertAndWrite({ [TOKEN_TYPE.SYMBOL]: ']' })
-        } else this.write()
+          this.assert({ [TOKEN_TYPE.SYMBOL]: ']' })
+          this.compileArrayValue(identifier)
+        } else {
+          this.compileIdentifier(tokenizer.tokenValue())
+        }
         break
       default: {
         const tokenTypes = [TOKEN_TYPE.INTEGER_CONSTANT, TOKEN_TYPE.STRING_CONSTANT, TOKEN_TYPE.IDENTIFIER]
@@ -421,8 +588,61 @@ class CompilationEngine {
         throw new ParserException(`Expected ${msg} but found ${type.toUpperCase()} ${tokenizer.tokenValue()}`)
       }
     }
+  }
 
-    this.writer.writeEnd('term')
+  /**
+   * Returns vm commands for an identifier.
+   * @param {string} identifier identifier
+   * @throws {TokenException} if identifier is not in both subroutine
+   * and class symbol tables.
+   */
+  compileIdentifier (identifier) {
+    const index = this.symbolTable.indexOf(identifier)
+    const segment = this.symbolTable.segmentOf(identifier)
+    if (segment) return this.vmWriter.writePush(segment, index)
+    throw new TokenException(
+      `In subroutine ${this.currentSubroutineName}: ${identifier} is not defined as a field,
+      parameter or local or static variable`
+    )
+  }
+
+  /**
+   * Compiles a string constant.
+   * @param {String} str string constant
+   * @returns {String} vm commands for a string constant
+   */
+  compileStringConstant (str) {
+    const length = str.length
+    this.vmWriter.writePush(SEGMENTS.CONSTANT, length)
+    this.vmWriter.writeCall('String.new', 1)
+
+    for (let i = 0; i < length; i++) {
+      const asciiCode = str.charCodeAt(i)
+      this.vmWriter.writePush(SEGMENTS.CONSTANT, asciiCode)
+      this.vmWriter.writeCall('String.appendChar', 2)
+    }
+  }
+
+  compileKeywordConstant () {
+    this.assert({
+      [TOKEN_TYPE.KEYWORD]: [
+        KEYWORDS.TRUE, KEYWORDS.FALSE, KEYWORDS.NULL, KEYWORDS.THIS
+      ]
+    })
+    const keyword = this.tokenizer.tokenValue()
+    switch (keyword) {
+      case KEYWORDS.TRUE:
+        this.vmWriter.writePush(SEGMENTS.CONSTANT, 0)
+        this.vmWriter.writeArithmetic(VM_UNARY_COMMANDS_MAPPING['~'])
+        break
+      case KEYWORDS.THIS:
+        this.vmWriter.writePush(SEGMENTS.POINTER, 0)
+        break
+      case KEYWORDS.NULL:
+      case KEYWORDS.FALSE:
+        this.vmWriter.writePush(SEGMENTS.CONSTANT, 0)
+        break
+    }
   }
 
   /**
@@ -430,20 +650,21 @@ class CompilationEngine {
    * `(expression (',' expression)*)?`
    */
   compileExpressionList () {
-    this.writer.writeStart('expressionList')
+    let nArgs = 0
     const isExpressionEnd = this.lookAhead(')')
-    if (isExpressionEnd) return this.writer.writeEnd('expressionList')
+    if (isExpressionEnd) return nArgs
     while (true) {
       this.compileExpression()
+      nArgs++
       this.tokenizer.advance()
       const value = this.tokenizer.tokenValue()
       if (value !== ',') {
         this.tokenizer.back()
         break
       }
-      this.write()
     }
-    this.writer.writeEnd('expressionList')
+
+    return nArgs
   }
 
   /**
@@ -473,14 +694,6 @@ class CompilationEngine {
     if (expectedValuesArray.includes(value)) return
 
     throw new ParserException(msg)
-  }
-
-  /**
-   * Writes the current token value and type to xml file
-   */
-  write () {
-    const { writer, tokenizer } = this
-    writer.write(tokenizer.tokenValue(), tokenizer.tokenType())
   }
 
   /**

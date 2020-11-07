@@ -24,3 +24,25 @@ export const areTextsEqual = (text1, text2) => {
 
   return areEqual
 }
+
+/**
+ * Returns the corresponding vmcommand for the input jack command
+ * @param {string} command jack command
+ * @returns {string} vmcommand
+ */
+export const VM_BINARY_COMMANDS_MAPPING = {
+  '+': 'add',
+  '-': 'sub',
+  '*': 'call Math.multiply 2',
+  '/': 'call Math.divide 2',
+  '&': 'and',
+  '|': 'or',
+  '<': 'lt',
+  '>': 'gt',
+  '=': 'eq'
+}
+
+export const VM_UNARY_COMMANDS_MAPPING = {
+  '-': 'neg',
+  '~': 'not'
+}

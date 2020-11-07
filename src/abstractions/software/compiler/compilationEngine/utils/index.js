@@ -4,6 +4,7 @@ export const convertToArray = value => {
 }
 
 export const OPERATORS = ['+', '-', '*', '/', '&', '|', '<', '>', '=']
+export const UNARY_OPERATORS = ['-', '~']
 
 /**
  * checks if two texts are equal ignoring their indentations

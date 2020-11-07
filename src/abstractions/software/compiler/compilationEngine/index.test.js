@@ -94,9 +94,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse varDecs', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'var int height, width;\n var char x;')
+    const jackCode = getFunctionJackCodeTemplate('var int height, width;\n var char x;')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <varDec>
         <keyword> var </keyword>
         <keyword> int </keyword>
@@ -117,22 +117,22 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse parameterList', () => {
-    const jackCode = getFunctionJackCodeTemplate('int x, char y')
+    const jackCode = getFunctionJackCodeTemplate('', 'int x, char y')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml(`
+    const expectedXml = getFunctionParseTokensXml('', `
       <keyword> int </keyword>
       <identifier> x </identifier>
       <symbol> , </symbol>
       <keyword> char </keyword>
       <identifier> y </identifier>
-    `, '')
+    `)
     compilationEngine.compileClass()
     expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
   })
 
   it('should throw an expected SYMBOL error while parsing parameterList', () => {
     // There should be comma between parameter lists(int x, boolean y)
-    const jackCode = getFunctionJackCodeTemplate('int x boolean y')
+    const jackCode = getFunctionJackCodeTemplate('', 'int x boolean y')
     const compilationEngine = new CompilationEngine(jackCode, writer)
 
     try {
@@ -143,9 +143,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse let statement', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'let age = i;')
+    const jackCode = getFunctionJackCodeTemplate('let age = i;')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <letStatement>
           <keyword> let </keyword>
@@ -165,7 +165,7 @@ describe('CompilationEngine class', () => {
   })
 
   it('should throw an expected = SYMBOL while parsing let statement', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'let age i;')
+    const jackCode = getFunctionJackCodeTemplate('let age i;')
     const compilationEngine = new CompilationEngine(jackCode, writer)
 
     try {
@@ -176,9 +176,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly if statement', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'if (x) {}')
+    const jackCode = getFunctionJackCodeTemplate('if (x) {}')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <ifStatement>
           <keyword> if </keyword>
@@ -199,7 +199,7 @@ describe('CompilationEngine class', () => {
   })
 
   it('should throw an expected SYMBOL ) if parenthesis is not closed', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'if (x {}')
+    const jackCode = getFunctionJackCodeTemplate('if (x {}')
     const compilationEngine = new CompilationEngine(jackCode, writer)
 
     try {
@@ -210,9 +210,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse if/else statement', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'if (x) {} else {}')
+    const jackCode = getFunctionJackCodeTemplate('if (x) {} else {}')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <ifStatement>
           <keyword> if </keyword>
@@ -236,9 +236,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse while statement', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'while (x) {}')
+    const jackCode = getFunctionJackCodeTemplate('while (x) {}')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <whileStatement>
           <keyword> while </keyword>
@@ -260,9 +260,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse do statement(function call)', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'do play();')
+    const jackCode = getFunctionJackCodeTemplate('do play();')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <doStatement>
           <keyword> do </keyword>
@@ -281,9 +281,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse do statement(method call)', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'do a.play();')
+    const jackCode = getFunctionJackCodeTemplate('do a.play();')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <doStatement>
           <keyword> do </keyword>
@@ -304,13 +304,13 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse return statement', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'return;')
+    const jackCode = getFunctionJackCodeTemplate('return;')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <returnStatement>
-            <keyword> return </keyword>
-            <symbol> ; </symbol>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
         </returnStatement>
       </statements>
     `)
@@ -320,9 +320,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse expression(identifier term only)', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'return a+b;')
+    const jackCode = getFunctionJackCodeTemplate('return a+b;')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <returnStatement>
             <keyword> return </keyword>
@@ -345,9 +345,9 @@ describe('CompilationEngine class', () => {
   })
 
   it('should correctly parse let and do statements together', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'let x = x + y;\n do play();')
+    const jackCode = getFunctionJackCodeTemplate('let x = x + y;\n do play();')
     const compilationEngine = new CompilationEngine(jackCode, writer)
-    const expectedXml = getFunctionParseTokensXml('', `
+    const expectedXml = getFunctionParseTokensXml(`
       <statements>
         <letStatement>
           <keyword> let </keyword>
@@ -381,7 +381,7 @@ describe('CompilationEngine class', () => {
   })
 
   it('should throw a type error', () => {
-    const jackCode = getFunctionJackCodeTemplate('', 'var;')
+    const jackCode = getFunctionJackCodeTemplate('var;')
     const compilationEngine = new CompilationEngine(jackCode, writer)
 
     try {
@@ -389,6 +389,232 @@ describe('CompilationEngine class', () => {
     } catch (e) {
       expect(e.message).toBe('Expected KEYWORD OR IDENTIFIER, \'int,char,boolean\', but found SYMBOL \';\'')
     }
+  })
+
+  describe('expression', () => {
+    it('should correctly parse integer constant expression', () => {
+      const jackCode = getFunctionJackCodeTemplate('return 1-5;')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <returnStatement>
+            <keyword> return </keyword>
+            <expression>
+              <term>
+                <integerConstant> 1 </integerConstant>
+              </term>
+              <symbol> - </symbol>
+              <term>
+                <integerConstant> 5 </integerConstant>
+              </term>
+            </expression>
+            <symbol> ; </symbol>
+          </returnStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse string constant expression', () => {
+      const jackCode = getFunctionJackCodeTemplate('return "RIGHT";')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <returnStatement>
+            <keyword> return </keyword>
+            <expression>
+              <term>
+                <stringConstant> RIGHT </stringConstant>
+              </term>
+            </expression>
+            <symbol> ; </symbol>
+          </returnStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse identifier', () => {
+      const jackCode = getFunctionJackCodeTemplate('return a+b;')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <returnStatement>
+              <keyword> return </keyword>
+              <expression>
+                <term>
+                  <identifier> a </identifier>
+                </term>
+                <symbol> + </symbol>
+                <term>
+                  <identifier> b </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+          </returnStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse array call', () => {
+      const jackCode = getFunctionJackCodeTemplate('return a[0];')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <returnStatement>
+              <keyword> return </keyword>
+              <expression>
+                <term>
+                  <identifier> a </identifier>
+                  <symbol> [ </symbol>
+                  <expression>
+                    <term>
+                      <integerConstant> 0 </integerConstant>
+                    </term>
+                  </expression>
+                  <symbol> ] </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+          </returnStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse subroutine call', () => {
+      const jackCode = getFunctionJackCodeTemplate('return a.b();')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <returnStatement>
+              <keyword> return </keyword>
+              <expression>
+                <term>
+                  <identifier> a </identifier>
+                  <symbol> . </symbol>
+                  <identifier> b </identifier>
+                  <symbol> ( </symbol>
+                  <expressionList>
+                  </expressionList>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+          </returnStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse special symbols condition', () => {
+      const jackCode = getFunctionJackCodeTemplate('return i > length;')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <returnStatement>
+              <keyword> return </keyword>
+              <expression>
+                <term>
+                  <identifier> i </identifier>
+                </term>
+                <symbol> &gt; </symbol>
+                <term>
+                  <identifier> length </identifier>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+          </returnStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse expression inside expression', () => {
+      const jackCode = getFunctionJackCodeTemplate('let i = i * (-j);')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <letStatement>
+              <keyword> let </keyword>
+              <identifier> i </identifier>
+              <symbol> = </symbol>
+              <expression>
+                <term>
+                  <identifier> i </identifier>
+                </term>
+                <symbol> * </symbol>
+                <term>
+                  <symbol> ( </symbol>
+                    <expression>
+                      <term>
+                        <symbol> - </symbol>
+                        <term>
+                          <identifier> j </identifier>
+                        </term>
+                      </term>
+                    </expression>
+                  <symbol> ) </symbol>
+                </term>
+              </expression>
+              <symbol> ; </symbol>
+          </letStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should correctly parse unary op', () => {
+      const jackCode = getFunctionJackCodeTemplate('let i = ~true;')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+      const expectedXml = getFunctionParseTokensXml(`
+        <statements>
+          <letStatement>
+            <keyword> let </keyword>
+            <identifier> i </identifier>
+            <symbol> = </symbol>
+            <expression>
+              <term>
+                <symbol> ~ </symbol>
+                <term>
+                  <keyword> true </keyword>
+                </term>
+              </term>
+            </expression>
+            <symbol> ; </symbol>
+          </letStatement>
+        </statements>
+      `)
+
+      compilationEngine.compileClass()
+      expect(areTextsEqual(writer.getXml(), expectedXml)).toBe(true)
+    })
+
+    it('should throw an exception while parsing unary op', () => {
+      const jackCode = getFunctionJackCodeTemplate('let i = +x;')
+      const compilationEngine = new CompilationEngine(jackCode, writer)
+
+      try {
+        compilationEngine.compileClass()
+      } catch (e) {
+        expect(e.message).toBe('Expected \'(\' OR \'-, ~\' but found SYMBOL \'+\'')
+      }
+    })
   })
 })
 
@@ -412,7 +638,7 @@ const getParseTokensXml = (snippet = '') => {
   `
 }
 
-const getFunctionJackCodeTemplate = (parameters = '', body = '') => {
+const getFunctionJackCodeTemplate = (body = '', parameters = '') => {
   return getJackCodeTemplate(`
     function int getAge (${parameters}) {
       ${body}
@@ -420,7 +646,7 @@ const getFunctionJackCodeTemplate = (parameters = '', body = '') => {
   `)
 }
 
-const getFunctionParseTokensXml = (parameters = '', body = '') => {
+const getFunctionParseTokensXml = (body = '', parameters = '') => {
   return getParseTokensXml(`
     <subroutineDec>
       <keyword> function </keyword>

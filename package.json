@@ -25,6 +25,7 @@
     "extends": "react-app"
   },
   "standard": {
+    "parser": "babel-eslint",
     "env": [ "mocha"],
     "globals": [
       "describe",

@@ -53,12 +53,7 @@ class ALU {
   }
 
   setControlBits (controlBits) {
-    this.zx = controlBits[0]
-    this.nx = controlBits[1]
-    this.zy = controlBits[2]
-    this.ny = controlBits[3]
-    this.f = controlBits[4]
-    this.no = controlBits[5]
+    [this.zx, this.nx, this.zy, this.ny, this.f, this.no] = controlBits
   }
 
   isOn (bit) {

@@ -1,5 +1,5 @@
 /**
- * Error encountered while processing a given line/command
+ * Error encountered while setting/retrieving memory values
  */
 class ROMException extends Error {
   constructor (message) {

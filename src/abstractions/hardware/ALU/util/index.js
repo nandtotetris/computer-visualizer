@@ -16,7 +16,7 @@ export const add16Binary = (a, b) => {
   return result
 }
 
-export const convertToNumber = bits => parseInt(bits, 2)
+export const convertToNumber = bits => typeof bits === 'number' ? bits : parseInt(bits, 2)
 
 export const getComputeFromInstruction = instruction =>
   instruction.slice(4, 10)

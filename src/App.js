@@ -1,13 +1,10 @@
 import React from 'react'
 import './App.css'
-import CodeMirrorComponent from 'components/codemirror'
+import AssemblerUI from 'components/assembler'
 
 function App () {
   return (
-    <div className='App'>
-      Nand2tetris
-      <CodeMirrorComponent />
-    </div>
+    <AssemblerUI />
   )
 }
 

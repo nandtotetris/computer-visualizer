@@ -1,12 +1,18 @@
 import React from 'react'
+import CompilerFirstStage from 'components/CompilerFirstStage'
 import './App.css'
-import CodeMirrorComponent from 'components/codemirror'
 
 function App () {
   return (
     <div className='App'>
-      Nand2tetris
-      <CodeMirrorComponent />
+      <CompilerFirstStage code={`
+      // This is a simple print program
+      // Hello world
+
+      class Main {
+        do Output.printInt(4);
+      }`}
+      />
     </div>
   )
 }

@@ -33,8 +33,8 @@ export const MainWrapper = styled.div`
 
 export const ContentWrapper = styled.div`
   display: grid;
-  grid-gap: 140px;
-  grid-template-columns: 400px 400px 400px;
+  grid-gap: 76px;
+  grid-template-columns: 29% 29% 29%;
   width: 100%;
   grid-auto-flow: dense;
 `

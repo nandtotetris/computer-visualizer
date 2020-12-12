@@ -1,18 +1,20 @@
 import React from 'react'
-import CompilerFirstStage from 'components/CompilerFirstStage'
+import CodeMirror from 'components/Codemirror'
+// import CompilerFirstStage from 'components/CompilerFirstStage'
 import './App.css'
 
 function App () {
   return (
     <div className='App'>
-      <CompilerFirstStage code={`
+      {/* <CompilerFirstStage code={`
       // This is a simple print program
       // Hello world
 
       class Main {
         do Output.printInt(4);
       }`}
-      />
+      /> */}
+      <CodeMirror />
     </div>
   )
 }

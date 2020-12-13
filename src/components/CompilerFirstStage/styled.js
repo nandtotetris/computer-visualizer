@@ -37,3 +37,7 @@ export const ContentWrapper = styled.div`
   width: 100%;
   grid-auto-flow: dense;
 `
+
+export const ButtonsWrapper = styled.div`
+  align-self: flex-end;
+`

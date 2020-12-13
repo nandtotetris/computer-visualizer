@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Modal } from 'antd'
+import { Link } from 'react-router-dom'
 import { TealButton } from 'components/Buttons'
 import CodeEditor from 'components/CodeEditor'
 import Tokenizer from 'components/Tokenizer'
 import { MODAL_INFOS } from './util'
-import { MainWrapper, ContentWrapper, GlobalStyle } from './styled'
+import { MainWrapper, ContentWrapper, GlobalStyle, ButtonsWrapper } from './styled'
 import CommentRemover from 'components/CommentRemover'
 import { useMainContextStates } from 'contexts'
 import Header from 'components/Header'
+import { ROUTINGS } from 'constants/routing'
 
 const CompilerFirstStage = props => {
   const { jackCode } = useMainContextStates()
@@ -40,9 +42,12 @@ const CompilerFirstStage = props => {
     <MainWrapper>
       <GlobalStyle />
       <Header>Compiler Stage I (Preprocessor and Tokenizer)</Header>
-      <TealButton mb={20} onClick={handleButtonClick} disabled={index === 3}>
-        {index === 2 ? 'Finish' : 'Next'}
-      </TealButton>
+      <ButtonsWrapper>
+        <Link to={ROUTINGS.MAIN}><TealButton mr={20}>Back to Editor</TealButton></Link>
+        <TealButton mb={20} onClick={handleButtonClick} disabled={index === 3}>
+          {index === 2 ? 'Finish' : 'Next'}
+        </TealButton>
+      </ButtonsWrapper>
       <ContentWrapper>
         {showCode && <CodeEditor code={jackCode} badgeText='Jack program' />}
         {showRemoveComment && <CommentRemover code={jackCode} badgeText='Preprocessor' tooltipText='In this step comments are removed from jack code' />}

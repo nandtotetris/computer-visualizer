@@ -9,7 +9,7 @@ const getModalHeader = header => {
 export const MODAL_INFOS = [
   {
     title: 'Code',
-    content: `${getModalHeader('User inputed program')}${getModalContent('// This is an empty jack code\nclass Main {}')}`
+    content: `${getModalHeader('Compiler first stage')}${getModalContent('In this first stage the compiler will remove comments and\nbreak the jack code into jack tokens')}`
   },
   {
     title: 'Preprocessor',
@@ -17,6 +17,6 @@ export const MODAL_INFOS = [
   },
   {
     title: 'Tokenizer',
-    content: `${getModalHeader('The next step is to remove all comments and white space from the input stream and breaks it into Jack-language tokens, as specified by the Jack grammar\n')}${getModalContent('class  =>  Keyword\nMain   =>  Identifier\n{      =>  Symbol\n}      =>  Symbol')}`
+    content: `${getModalHeader('The next step is to remove all comments and white space from the input stream and breaks it into Jack-language tokens, as specified by the Jack grammar\n')}${getModalContent('class Main {}\n\nclass  =>  Keyword\nMain   =>  Identifier\n{      =>  Symbol\n}      =>  Symbol')}`
   }
 ]

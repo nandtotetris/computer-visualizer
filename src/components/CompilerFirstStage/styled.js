@@ -27,7 +27,6 @@ export const GlobalStyle = createGlobalStyle`
 export const MainWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   padding: 50px;
 `
 

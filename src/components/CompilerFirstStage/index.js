@@ -7,6 +7,7 @@ import { MODAL_INFOS } from './util'
 import { MainWrapper, ContentWrapper, GlobalStyle } from './styled'
 import CommentRemover from 'components/CommentRemover'
 import { useMainContextStates } from 'contexts'
+import Header from 'components/Header'
 
 const CompilerFirstStage = props => {
   const { jackCode } = useMainContextStates()
@@ -38,11 +39,12 @@ const CompilerFirstStage = props => {
   return (
     <MainWrapper>
       <GlobalStyle />
+      <Header>Compiler Stage I (Preprocessor and Tokenizer)</Header>
       <TealButton mb={20} onClick={handleButtonClick} disabled={index === 3}>
         {index === 2 ? 'Finish' : 'Next'}
       </TealButton>
       <ContentWrapper>
-        {showCode && <CodeEditor code={jackCode} badgeText='Jack program' tooltipText='User inputted jack code' />}
+        {showCode && <CodeEditor code={jackCode} badgeText='Jack program' />}
         {showRemoveComment && <CommentRemover code={jackCode} badgeText='Preprocessor' tooltipText='In this step comments are removed from jack code' />}
         {showTokenizer && <Tokenizer code={jackCode} badgeText='Tokenizer' tooltipText='In this step the jack code is broken into jack tokens' />}
       </ContentWrapper>

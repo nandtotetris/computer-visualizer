@@ -11,6 +11,7 @@ export const TealButton = styled(Button)`
   outline: none;
   border-color: teal;
   color: white;
+  align-self: flex-end;
 
   &:hover, &:focus {
     background-color: #1aadad;

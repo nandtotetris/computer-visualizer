@@ -4,7 +4,17 @@ import { SET_JACK_CODE } from 'constants/context'
 const MainContext = React.createContext()
 
 const initialState = {
-  jackCode: ''
+  jackCode:
+`// Simple program to print an integer
+
+class Main {
+  function void main () {
+    do Output.printInt(1); // print 1
+    return
+  }
+}
+  `,
+  tokenizerDelay: 500
 }
 
 export function reducer (state, action) {

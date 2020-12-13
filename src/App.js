@@ -1,20 +1,17 @@
 import React from 'react'
-import CodeMirror from 'components/Codemirror'
-// import CompilerFirstStage from 'components/CompilerFirstStage'
+import { Route, Switch } from 'react-router-dom'
 import './App.css'
+import CompilerFirstStage from 'components/CompilerFirstStage'
+import { ROUTINGS } from 'constants/routing'
+import CodeMirrorComponent from 'components/Codemirror'
 
 function App () {
   return (
     <div className='App'>
-      {/* <CompilerFirstStage code={`
-      // This is a simple print program
-      // Hello world
-
-      class Main {
-        do Output.printInt(4);
-      }`}
-      /> */}
-      <CodeMirror />
+      <Switch>
+        <Route exact path={ROUTINGS.MAIN} component={CodeMirrorComponent} />
+        <Route path={ROUTINGS.COMPILER_FIRST_STAGE} component={CompilerFirstStage} />
+      </Switch>
     </div>
   )
 }

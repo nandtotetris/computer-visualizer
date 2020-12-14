@@ -2,7 +2,7 @@ import { Badge } from 'antd'
 import styled from 'styled-components'
 
 export const MainWrapper = styled.div`
-  width: 400px;
+  width: ${props => props.width ? props.width : 400}px;
   height: 650px;
   display: flex;
   flex-direction: column;

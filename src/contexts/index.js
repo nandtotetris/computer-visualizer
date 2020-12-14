@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
 import { SET_JACK_CODE } from 'constants/context'
 
-const MainContext = React.createContext()
+export const MainContext = React.createContext()
 
 const initialState = {
   jackCode:
@@ -10,7 +10,7 @@ const initialState = {
 class Main {
   function void main () {
     do Output.printInt(1); // print 1
-    return
+    return;
   }
 }
   `,

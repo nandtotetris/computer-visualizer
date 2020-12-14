@@ -43,10 +43,11 @@ const CompilerFirstStage = props => {
       <GlobalStyle />
       <Header>Compiler Stage I (Preprocessor and Tokenizer)</Header>
       <ButtonsWrapper>
-        <Link to={ROUTINGS.MAIN}><TealButton mr={20}>Back to Editor</TealButton></Link>
-        <TealButton mb={20} onClick={handleButtonClick} disabled={index === 3}>
-          {index === 2 ? 'Finish' : 'Next'}
-        </TealButton>
+        <ConditionalLink condition={index === 2} to={ROUTINGS.COMPILER_SECOND_STAGE}>
+          <TealButton mb={20} onClick={handleButtonClick} disabled={index === 3}>
+            {index === 2 ? 'Finish' : 'Next'}
+          </TealButton>
+        </ConditionalLink>
       </ButtonsWrapper>
       <ContentWrapper>
         {showCode && <CodeEditor code={jackCode} badgeText='Jack program' />}
@@ -55,6 +56,10 @@ const CompilerFirstStage = props => {
       </ContentWrapper>
     </MainWrapper>
   )
+}
+
+const ConditionalLink = ({ children, to, condition }) => {
+  return condition ? <Link to={to}>{children}</Link> : <>{children}</>
 }
 
 export default CompilerFirstStage

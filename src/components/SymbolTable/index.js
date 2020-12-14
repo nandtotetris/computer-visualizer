@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
-import { Table } from 'antd'
+import { Modal, Table } from 'antd'
 import { getColumnTitles, getTableEntries } from './util'
 import { TableWrapper, Wrapper } from './styled'
+import { SYMBOL_TABLES_INFO } from 'components/ConceptNote/util'
 
 const SymbolTableUI = props => {
   const { symbolTable: { classSymbolTable, subroutineSymbolTable } } = props
@@ -14,6 +15,13 @@ const SymbolTableUI = props => {
     return getTableEntries(subroutineSymbolTable)
   }, [subroutineSymbolTable])
 
+  const onTableHeaderClick = header => {
+    Modal.info({
+      title: header,
+      content: <div dangerouslySetInnerHTML={{ __html: SYMBOL_TABLES_INFO[header] }} />
+    })
+  }
+
   return (
     <Wrapper>
       <TableWrapper>
@@ -24,6 +32,11 @@ const SymbolTableUI = props => {
           pagination={{
             hideOnSinglePage: true
           }}
+          onHeaderRow={column => {
+            return {
+              onClick: () => onTableHeaderClick('subroutine') // click header row
+            }
+          }}
         />
       </TableWrapper>
       <TableWrapper>
@@ -33,6 +46,11 @@ const SymbolTableUI = props => {
           bordered
           pagination={{
             hideOnSinglePage: true
+          }}
+          onHeaderRow={column => {
+            return {
+              onClick: () => onTableHeaderClick('class') // click header row
+            }
           }}
         />
       </TableWrapper>

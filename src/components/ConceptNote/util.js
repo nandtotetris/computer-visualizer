@@ -92,6 +92,11 @@ const getCodeTag = code => {
   return `<pre class='code-sample'><code>${code}</code></pre>`
 }
 
+export const SYMBOL_TABLES_INFO = {
+  subroutine: `<span class='description'>To handle subroutine variables<br /><br /> Examples</span>${getCodeTag('var int nAccounts;\nAccounts\tint\tlocal 0')}\n${getCodeTag('var int sum;\nsum\tint\targument\t0')}`,
+  class: `<span class='description'>To handle class variables<br /><br /> Examples</span>${getCodeTag('field int age;\nage\tint\tfield 0')}\n${getCodeTag('static string name;\nname\tstring\tstatic\t0')}`
+}
+
 export const SCOPE_CONTENT = {
   compileclass: `<span class='description'>Compiles a complete class<br /><br /> Examples</span>${getCodeTag('class Main { }')}\n${getCodeTag('class Main {\n  field int age;\n}')}`,
   compileclassvardec: `<span class='description'>Compiles a static declaration or a field declaration<br /><br /> Examples</span>${getCodeTag('field int height;')}\n${getCodeTag('static boolean hasFourLegs;')}`,

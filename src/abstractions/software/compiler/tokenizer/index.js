@@ -5,14 +5,25 @@ import { TOKEN_TYPE } from './types'
 import TokenException from './TokenException'
 
 class JackTokenizer {
-  constructor (jackCode) {
+  constructor (jackCode, dispatchCurrentTokenIndex) {
     /** @type {JackToken[]} */
     this.tokens = []
     this.currentTokenIndex = -1
     /** @type {JackToken} */
     this.currentToken = null
+    this.observers = []
     // Split the jack code into JackTokens
     this.extractTokens(removeComments(jackCode))
+  }
+
+  subscribe (observer) {
+    this.observers.push(observer)
+    const index = this.observers.indexOf(observer)
+    return () => this.observers.splice(index, 1)
+  }
+
+  notify (data) {
+    this.observers.forEach(observer => observer(data))
   }
 
   // It resets the current token
@@ -31,7 +42,11 @@ class JackTokenizer {
     for (const match of matches) {
       const [token] = match
       this.tokens.push(
-        new JackToken(token, this.getTokenTypeByRegexCapture(match))
+        new JackToken(
+          token,
+          this.getTokenTypeByRegexCapture(match),
+          match.index
+        )
       )
     }
   }
@@ -72,6 +87,7 @@ class JackTokenizer {
   advance () {
     if (!this.hasMoreTokens()) return (this.currentToken = null)
     this.currentToken = this.tokens[++this.currentTokenIndex]
+    this.notify(this.currentTokenIndex)
   }
 
   /**
@@ -79,6 +95,7 @@ class JackTokenizer {
    */
   back () {
     this.currentToken = this.tokens[--this.currentTokenIndex]
+    this.notify(this.currentTokenIndex)
   }
 
   /**

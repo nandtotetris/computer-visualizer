@@ -1,18 +1,16 @@
 import React from 'react'
+import { Tooltip } from 'antd'
 import Badge from 'components/Badge'
 import { Pre, Wrapper, Code, MainWrapper } from './styled'
-import { Tooltip } from 'antd'
 
 const CodeEditor = props => {
-  const { code, badgeText, tooltipText } = props
+  const { code, badgeText, tooltipText, width } = props
   return (
-    <MainWrapper>
-      <Badge badgeText={<Tooltip title={tooltipText}>{badgeText}</Tooltip>} />
+    <MainWrapper width={width}>
+      {badgeText && <Badge badgeText={<Tooltip title={tooltipText}>{badgeText}</Tooltip>} />}
       <Wrapper>
         <Pre>
-          <Code>
-            {code}
-          </Code>
+          <Code dangerouslySetInnerHTML={{ __html: code }} />
         </Pre>
       </Wrapper>
     </MainWrapper>

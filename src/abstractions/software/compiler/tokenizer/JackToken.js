@@ -2,10 +2,11 @@
 import { TOKEN_TYPE } from './types'
 
 class JackToken {
-  constructor (token, type) {
+  constructor (token, type, position) {
     this.token = token
     /** @type {TOKEN_TYPE} */
     this.tokenType = type
+    this.position = position
   }
 
   /**
@@ -20,6 +21,10 @@ class JackToken {
    */
   type () {
     return this.tokenType
+  }
+
+  index () {
+    return this.position
   }
 }
 

@@ -11,7 +11,18 @@ const KIND_TO_SEGMENT_MAPPING = {
 
 class SymbolTable {
   constructor () {
+    this.observers = []
     this.initializeSymbolTables()
+  }
+
+  subscribe (observer) {
+    this.observers.push(observer)
+    const index = this.observers.indexOf(observer)
+    return () => this.observers.splice(index, 1)
+  }
+
+  notify (data) {
+    this.observers.forEach(observer => observer(data))
   }
 
   reset () {
@@ -21,6 +32,10 @@ class SymbolTable {
   initializeSymbolTables () {
     this.subroutineSymbolTable = {}
     this.classSymbolTable = {}
+    this.notify({
+      classSymbolTable: this.classSymbolTable,
+      subroutineSymbolTable: this.subroutineSymbolTable
+    })
   }
 
   /**
@@ -29,6 +44,10 @@ class SymbolTable {
    */
   startSubroutine () {
     this.subroutineSymbolTable = {}
+    this.notify(JSON.stringify({
+      classSymbolTable: this.classSymbolTable,
+      subroutineSymbolTable: this.subroutineSymbolTable
+    }))
   }
 
   /**
@@ -43,8 +62,12 @@ class SymbolTable {
     const isClassScope = kind === KIND_TYPE.FIELD || kind === KIND_TYPE.STATIC
     const index = this.varCount(kind)
     const entry = { type, kind, index }
-    if (isClassScope) return (this.classSymbolTable[name] = entry)
-    return (this.subroutineSymbolTable[name] = entry)
+    if (isClassScope) this.classSymbolTable[name] = entry
+    else this.subroutineSymbolTable[name] = entry
+    this.notify(JSON.stringify({
+      classSymbolTable: this.classSymbolTable,
+      subroutineSymbolTable: this.subroutineSymbolTable
+    }))
   }
 
   /**

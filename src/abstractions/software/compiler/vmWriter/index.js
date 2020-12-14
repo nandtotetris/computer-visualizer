@@ -3,15 +3,32 @@ import { SEGMENTS, COMMANDS } from './types'
 
 class VMWriter {
   constructor (props) {
+    this.observers = []
     this.initializeVM()
+  }
+
+  subscribe (observer) {
+    this.observers.push(observer)
+    const index = this.observers.indexOf(observer)
+    return () => this.observers.splice(index, 1)
+  }
+
+  notify (data) {
+    this.observers.forEach(observer => observer(data))
   }
 
   reset () {
     this.initializeVM()
+    this.notify(this.vm)
   }
 
   initializeVM () {
     this.vm = ''
+  }
+
+  writeVM (vm) {
+    this.vm += `${vm}\n`
+    this.notify(this.vm)
   }
 
   /**
@@ -21,7 +38,7 @@ class VMWriter {
    * @param {number} index index
    */
   writePush (segment, index) {
-    this.vm += `push ${segment} ${index}\n`
+    this.writeVM(`push ${segment} ${index}`)
   }
 
   /**
@@ -32,7 +49,7 @@ class VMWriter {
    * @param {number} index index
    */
   writePop (segment, index) {
-    this.vm += `pop ${segment} ${index}\n`
+    this.writeVM(`pop ${segment} ${index}`)
   }
 
   /**
@@ -40,7 +57,7 @@ class VMWriter {
    * @param {COMMANDS} command command
    */
   writeArithmetic (command) {
-    this.vm += `${command}\n`
+    this.writeVM(`${command}`)
   }
 
   /**
@@ -48,7 +65,7 @@ class VMWriter {
    * @param {string} label label
    */
   writeLabel (label) {
-    this.vm += `label ${label}\n`
+    this.writeVM(`label ${label}`)
   }
 
   /**
@@ -56,7 +73,7 @@ class VMWriter {
    * @param {string} label label
    */
   writeGoto (label) {
-    this.vm += `goto ${label}\n`
+    this.writeVM(`goto ${label}`)
   }
 
   /**
@@ -64,7 +81,7 @@ class VMWriter {
    * @param {string} label label
    */
   writeIf (label) {
-    this.vm += `if-goto ${label}\n`
+    this.writeVM(`if-goto ${label}`)
   }
 
   /**
@@ -74,7 +91,7 @@ class VMWriter {
    * the called function
    */
   writeCall (name, nArgs) {
-    this.vm += `call ${name} ${nArgs}\n`
+    this.writeVM(`call ${name} ${nArgs}`)
   }
 
   /**
@@ -83,14 +100,14 @@ class VMWriter {
    * @param {number} nLocals number of local variables the function have.
    */
   writeFunction (name, nLocals) {
-    this.vm += `function ${name} ${nLocals}\n`
+    this.writeVM(`function ${name} ${nLocals}`)
   }
 
   /**
    * Writes a VM `return` command.
    */
   writeReturn () {
-    this.vm += 'return\n'
+    this.writeVM('return')
   }
 
   getVM () {

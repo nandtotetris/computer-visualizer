@@ -43,9 +43,10 @@ class CompilerSecondStage extends Component {
   }
 
   updateVMWriter = vmOutput => {
+    const { actions: { setVM } } = this.context
     this.clock += 1
     setTimeout(() => {
-      this.setState({ vmOutput })
+      this.setState({ vmOutput }, () => setVM(vmOutput))
     }, this.delay * this.clock)
   }
 

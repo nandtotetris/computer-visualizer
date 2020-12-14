@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react'
-import { SET_JACK_CODE } from 'constants/context'
+import { SET_JACK_CODE, SET_VM } from 'constants/context'
 
 export const MainContext = React.createContext()
 
@@ -14,6 +14,7 @@ class Main {
   }
 }
   `,
+  vm: '',
   tokenizerDelay: 500
 }
 
@@ -24,6 +25,11 @@ export function reducer (state, action) {
         ...state,
         jackCode: action.jackCode
       }
+    case SET_VM:
+      return {
+        ...state,
+        vm: action.vm
+      }
     default: return { ...state }
   }
 }
@@ -33,8 +39,11 @@ export default function MainContextProvider ({ children, providedState }) {
 
   const setJackCode = jackCode => dispatch({ type: SET_JACK_CODE, jackCode })
 
+  const setVM = vm => dispatch({ type: SET_VM, vm })
+
   const actions = {
-    setJackCode
+    setJackCode,
+    setVM
   }
 
   return (

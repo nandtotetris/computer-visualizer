@@ -19,6 +19,7 @@ const CodeMirrorComponent = () => {
         <CodeSnippet upCode={JACK_FRAGMENT_CODES.printInt} downCode={JACK_FRAGMENT_CODES.printStirng} />
         <CodeMirror
           className='code-mirror'
+          autoCursor={false}
           value={jackCode}
           options={{
             mode: 'java',

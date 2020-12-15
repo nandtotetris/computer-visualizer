@@ -25,7 +25,9 @@ const ModeContext = React.createContext(initialState)
 const ModeProvider = (props) => {
   const [state, dispatch] = useReducer(modeReducer, {
     ...initialState,
-    isSimulationModeOff: true
+    isPushSimulationOn: true,
+    isPopSimulationOn: true,
+    isArithmeticSimulationOn: true
   })
 
   const setters = getSetters(dispatch, ACTIONS)

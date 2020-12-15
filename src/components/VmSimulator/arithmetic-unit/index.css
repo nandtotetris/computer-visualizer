@@ -1,0 +1,30 @@
+.arithmeticBox {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.arithemticUnit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  /* background-color: black; */
+  color: black;
+}
+
+.arithemeticUnitWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;  
+}
+
+.arithmeticUnitLabel {
+  display: flex;
+  justify-content: center;
+  font-family: monospace;
+  padding-top: 3px;
+  color: green;
+  width: 100%;
+}

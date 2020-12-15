@@ -1,0 +1,20 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.boxTitle {
+  width: 100%;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boxContent {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

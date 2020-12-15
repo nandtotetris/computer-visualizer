@@ -1,0 +1,49 @@
+.registerWrapper {
+  display: flex;
+  color: white;
+  background: black;
+  align-items: center;
+  margin: 0 5%;
+}
+
+.registerLabel {
+  background: red;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.registerValue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.symbolTable {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  margin-bottom: 10px;
+  font-family: monospace;
+  align-self: flex-start;
+  margin-left: 9px;
+}
+
+.symbolTableRow {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.symbolTableCell {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25px;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+}

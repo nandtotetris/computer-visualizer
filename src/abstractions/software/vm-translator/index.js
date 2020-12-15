@@ -7,9 +7,9 @@ class HVMTranslator {
    * @param {{className: string, file: string}[]} fileInfos an array of HVM files
    * and their class names
    */
-  constructor (fileInfos) {
+  constructor (fileInfos, hasSysInit = false) {
     this.vmParser = new HVMParser(fileInfos)
-    this.assemblyWriter = new HVMCodeWriter(this.vmParser.hasSysInit())
+    this.assemblyWriter = new HVMCodeWriter(hasSysInit)
   }
 
   translate () {
@@ -49,6 +49,52 @@ class HVMTranslator {
       }
     }
     return this.assemblyWriter.Close()
+  }
+
+  getCommands () {
+    return this.vmParser.getCommands()
+  }
+
+  /**
+   * Stepwise translate
+   */
+  step () {
+    if (this.assemblyWriter.getAssemblyLength() === 0) {
+      this.assemblyWriter.writeInit()
+    }
+    if (!this.vmParser.hasMoreCommands()) return false
+    this.vmParser.advance()
+    const command = this.vmParser.getCurrentCommand()
+    switch (this.vmParser.getCommandType()) {
+      case COMMAND.PUSH:
+        this.assemblyWriter.writePushPop(command)
+        break
+      case COMMAND.POP:
+        this.assemblyWriter.writePushPop(command)
+        break
+      case COMMAND.FUNCTION:
+        this.assemblyWriter.writeFunction(command)
+        break
+      case COMMAND.RETURN:
+        this.assemblyWriter.writeReturn(command)
+        break
+      case COMMAND.CALL:
+        this.assemblyWriter.writeCall(command)
+        break
+      case COMMAND.LABEL:
+        this.assemblyWriter.writeLabel(command)
+        break
+      case COMMAND.GOTO:
+        this.assemblyWriter.writeGoto(command)
+        break
+      case COMMAND.IF_GOTO:
+        this.assemblyWriter.writeIf(command)
+        break
+      default:
+        this.assemblyWriter.writeArithmetic(command)
+        break
+    }
+    return this.assemblyWriter.getLastBuffer()
   }
 }
 export default HVMTranslator

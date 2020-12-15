@@ -10,6 +10,7 @@ class Assembler {
     this.symbolTable = new SymbolTable()
     this.writer = new Writer()
     this.RAMAddress = 16
+    this.parser = null
   }
 
   /**
@@ -49,9 +50,28 @@ class Assembler {
           this.writer.write(code.getCInstructionMachineCode(
             parser.comp(), parser.dest(), parser.jump()))
           break
+        default:
+          // DO NOTHING
       }
       parser.advance()
     }
+  }
+
+  /**
+   * do first pass and initialize the parser for the second pass
+   */
+  beforeStep () {
+    this.firstPass()
+    this.parser = new Parser(this.assemblyCode)
+    return this.parser
+  }
+
+  /**
+   * Stepwise second pass for inspection purpose
+   */
+  step () {
+    this.parser.advance()
+    return this.parser
   }
 
   /**

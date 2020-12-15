@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react'
-import { SET_JACK_CODE, SET_VM } from 'constants/context'
+import { SET_JACK_CODE, SET_MACHINE_CODE, SET_VM } from 'constants/context'
 
 export const MainContext = React.createContext()
 
@@ -15,6 +15,26 @@ class Main {
 }
   `,
   vm: '',
+  assembly:
+  `
+  // This file is part of www.nand2tetris.org
+  // and the book "The Elements of Computing Systems"
+  // by Nisan and Schocken, MIT Press.
+  // File name: projects/06/add/Add.asm
+  
+  // Computes R0 = 2 + 3  (R0 refers to RAM[0])
+  
+  @age
+  D=A
+  M=1
+  @3
+  (LOOP1)
+  D=D+A
+  @0
+  (LOOP2)
+  M=D
+  `,
+  machineCode: '',
   tokenizerDelay: 500
 }
 
@@ -30,6 +50,11 @@ export function reducer (state, action) {
         ...state,
         vm: action.vm
       }
+    case SET_MACHINE_CODE:
+      return {
+        ...state,
+        machineCode: action.machineCode
+      }
     default: return { ...state }
   }
 }
@@ -41,8 +66,11 @@ export default function MainContextProvider ({ children, providedState }) {
 
   const setVM = vm => dispatch({ type: SET_VM, vm })
 
+  const setMachineCode = machineCode => dispatch({ type: SET_MACHINE_CODE, machineCode })
+
   const actions = {
     setJackCode,
+    setMachineCode,
     setVM
   }
 

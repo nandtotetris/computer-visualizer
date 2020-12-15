@@ -14,7 +14,7 @@ class HVMTranslator {
 
   translate () {
     let command
-    this.assemblyWriter.writeInit()
+    // this.assemblyWriter.writeInit()
     while (this.vmParser.hasMoreCommands()) {
       this.vmParser.advance()
       command = this.vmParser.getCurrentCommand()
@@ -59,9 +59,9 @@ class HVMTranslator {
    * Stepwise translate
    */
   step () {
-    if (this.assemblyWriter.getAssemblyLength() === 0) {
-      this.assemblyWriter.writeInit()
-    }
+    // if (this.assemblyWriter.getAssemblyLength() === 0) {
+    //   this.assemblyWriter.writeInit()
+    // }
     if (!this.vmParser.hasMoreCommands()) return false
     this.vmParser.advance()
     const command = this.vmParser.getCurrentCommand()

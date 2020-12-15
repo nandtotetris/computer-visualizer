@@ -92,7 +92,8 @@ const useAsmGenerator = ({
     const batchCount = asmBatch.length
     setAsmBatchCount(batchCount)
     setters.nextAsmBatch(asmBatch)
-    if (isSimulationModeOff) {
+    const isAsmSimulating = isAllSimulationOn || isAsmStepSimulationOn
+    if (isSimulationModeOff || !isAsmSimulating) {
       !isVmLooping() && pushAssemblyBatch(asmBatch)
       return onAsmGenerationEnd(batchCount)
     }

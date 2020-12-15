@@ -144,6 +144,7 @@ const useAsmGenerator = ({
   useEffect(() => {
     if (!shouldExecAsm) return
     setShouldExecAsm(false)
+    setIsSimulating(true)
     const now = simulateAsmExecution(assembler.parser) || {}
     const shouldSkipNext = isSkipping || now.shouldSkip
     setIsAboutToExecAsm(false)

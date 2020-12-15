@@ -259,16 +259,21 @@ const useAsmStepwiseSimulator = ({
       const address = parseInt(state.aRegister)
       const jump = parser.jump()
       if (jump) {
-        return setters.asmDescription(ASM_JUMP_DESCRIPTIONS[jump](address))
+        const jumpDescriber = ASM_JUMP_DESCRIPTIONS[jump && jump.trim()]
+        return setters.asmDescription(jumpDescriber && jumpDescriber(address))
       }
       const dest = parser.dest()
       const comp = parser.comp()
+      const compDescriber = ASM_COMP_DESCRIPTIONS[comp && comp.trim()]
+      const compDescription = comp.includes('M') ? (
+        compDescriber ? compDescriber(address) : ''
+      ) : compDescriber
+      const destDescriber = ASM_DEST_DESCRIPTIONS[dest && dest.trim()]
+      const destDescription = dest.trim() === 'M' ? (
+        destDescriber ? destDescriber(address) : ''
+      ) : destDescriber
       setters.asmDescription(
-        `${comp.includes('M') ? ASM_COMP_DESCRIPTIONS[comp](address)
-        : ASM_COMP_DESCRIPTIONS[comp]}${
-          dest === 'M' ? ASM_DEST_DESCRIPTIONS[dest](address)
-          : ASM_DEST_DESCRIPTIONS[dest]
-        }`
+        `${compDescription}${destDescription}`
       )
     }
   }

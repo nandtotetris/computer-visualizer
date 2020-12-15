@@ -115,7 +115,7 @@ const useAsmGenerator = ({
       const shouldSimulateExec = (isAsmStepSimulationOn ||
       isAllSimulationOn || isAsmSteppingFast) && !isSkipping
       const shouldWaitForExecSignal = !isSkipping && !isSimulationModeOff &&
-        !isAllSimulationOn && !isAsmSteppingFast
+        !isAllSimulationOn && !isAsmSteppingFast && isAsmStepSimulationOn
       setIsAboutToExecAsm(shouldWaitForExecSignal)
       if (shouldWaitForExecSignal) {
         setAsmDescription(parser)

@@ -10,6 +10,7 @@ import MainContextProvider from 'contexts'
 import CompilerSecondStage from 'components/CompilerSecondStage'
 import { TealButton } from 'components/Buttons'
 import DrawerItem from 'components/DrawerItem'
+import CPU from 'components/CPU'
 
 function App () {
   const [visible, setVisible] = useState(false)
@@ -30,6 +31,7 @@ function App () {
           <Route exact path={ROUTINGS.MAIN} component={CodeMirrorComponent} />
           <Route path={ROUTINGS.COMPILER_FIRST_STAGE} component={CompilerFirstStage} />
           <Route path={ROUTINGS.COMPILER_SECOND_STAGE} component={CompilerSecondStage} />
+          <Route path={ROUTINGS.CPU} component={CPU} />
         </Switch>
       </MainContextProvider>
       <Drawer

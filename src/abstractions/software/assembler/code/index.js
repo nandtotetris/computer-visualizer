@@ -12,7 +12,7 @@ const destinationCodeTrap = {
   }
 }
 
-const DESTIONATION_CODES = new Proxy(Object.freeze({
+export const DESTIONATION_CODES = new Proxy(Object.freeze({
   M: '001',
   D: '010',
   DM: '011',
@@ -22,7 +22,7 @@ const DESTIONATION_CODES = new Proxy(Object.freeze({
   ADM: '111'
 }), destinationCodeTrap)
 
-const JUMP_CODES = Object.freeze({
+export const JUMP_CODES = Object.freeze({
   JGT: '001',
   JEQ: '010',
   JGE: '011',
@@ -45,7 +45,7 @@ const computeCodeTrap = {
   }
 }
 
-const COMPUTE_CODES = new Proxy(Object.freeze({
+export const COMPUTE_CODES = new Proxy(Object.freeze({
   0: '0101010',
   1: '0111111',
   '-1': '0111010',

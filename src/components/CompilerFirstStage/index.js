@@ -14,19 +14,18 @@ import { ROUTINGS } from 'constants/routing'
 const CompilerFirstStage = props => {
   const { jackCode } = useMainContextStates()
   const [index, setIndex] = useState(0)
-  const [showCode, setShowCode] = useState(false)
   const [showRemoveComment, setShowRemoveComment] = useState(false)
   const [showTokenizer, setShowTokenizer] = useState(false)
 
   useEffect(() => {
     const { title, content } = MODAL_INFOS[index]
+    if (index === 0) return
     Modal.info({
       title,
       content: (
         <div dangerouslySetInnerHTML={{ __html: content }} />
       ),
       onOk () {
-        setShowCode(index >= 0)
         setShowRemoveComment(index >= 1)
         setShowTokenizer(index === 2)
       }
@@ -50,7 +49,7 @@ const CompilerFirstStage = props => {
         </ConditionalLink>
       </ButtonsWrapper>
       <ContentWrapper>
-        {showCode && <CodeEditor code={jackCode} badgeText='Jack program' />}
+        <CodeEditor code={jackCode} badgeText='Jack program' />
         {showRemoveComment && <CommentRemover code={jackCode} badgeText='Preprocessor' tooltipText='In this step comments are removed from jack code' />}
         {showTokenizer && <Tokenizer code={jackCode} badgeText='Tokenizer' tooltipText='In this step the jack code is broken into jack tokens' />}
       </ContentWrapper>

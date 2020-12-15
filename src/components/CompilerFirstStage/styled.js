@@ -9,6 +9,7 @@ export const GlobalStyle = createGlobalStyle`
 
   .ant-modal-content {
     width: 600px !important;
+    margin-left: -80px;
 
     & .ant-modal-confirm-title {
       display: none;

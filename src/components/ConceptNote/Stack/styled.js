@@ -11,6 +11,10 @@ export const GlobalStyle = createGlobalStyle`
     background: unset;
   }
 
+  .grammar-modal .ant-modal-content {
+    margin-left: 0px;
+  }
+
   span.description {
     font-size: 17px;
   }
@@ -23,6 +27,7 @@ export const GlobalStyle = createGlobalStyle`
 
   .ant-modal-content {
     width: 800px !important;
+    margin-left: -150px;
 
     & .ant-btn.ant-btn-primary {
       background-color: teal;

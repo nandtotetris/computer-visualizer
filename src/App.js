@@ -44,11 +44,11 @@ function App () {
         closable={false}
         onClose={closeDrawer}
       >
-        <Link onClick={closeDrawer} to={ROUTINGS.MAIN}><DrawerItem bg='teal' co='white' text='Editor' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_FIRST_STAGE}><DrawerItem bg='#fb8c00' co='white' text='Compiler I' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_SECOND_STAGE}><DrawerItem bg='#6d4c41' co='white' text='Compiler II' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.VM_TRANSLATOR}><DrawerItem bg='#2196F3' co='white' text='VM Translator' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.CPU}><DrawerItem bg='#d81b60' co='white' text='CPU' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.MAIN}><DrawerItem bg='black' co='white' text='Editor' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_FIRST_STAGE}><DrawerItem bg='black' co='white' text='Compiler I' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_SECOND_STAGE}><DrawerItem bg='black' co='white' text='Compiler II' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.VM_TRANSLATOR}><DrawerItem bg='black' co='white' text='VM Translator' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.CPU}><DrawerItem bg='black' co='white' text='CPU' /></Link>
       </Drawer>
     </div>
   )

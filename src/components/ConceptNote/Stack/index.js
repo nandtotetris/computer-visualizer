@@ -77,6 +77,7 @@ const Stack = props => {
         </Wrapper>
       </MainWrapper>
       <Modal
+        className='grammar-modal'
         style={{ top: 0 }}
         title='Grammar'
         visible={isModalVisible}

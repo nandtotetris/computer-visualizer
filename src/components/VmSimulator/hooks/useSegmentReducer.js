@@ -33,7 +33,7 @@ const useSegmentReducer = () => {
   } = useContext(GeneralContext)
   const {
     state: {
-      isSimulationModeOff
+      isSimulationModeOff, isAsmStepSimulationOn, isAllSimulationOn
     }
   } = useContext(ModeContext)
 
@@ -141,7 +141,7 @@ const useSegmentReducer = () => {
   const setters = getSetters(dispatch, ACTIONS)
 
   const isRamBeingSetByAsm = () => {
-    return !isSimulationModeOff
+    return !isSimulationModeOff && (isAsmStepSimulationOn || isAllSimulationOn)
   }
 
   const getMergedSegment = ({ oldSegment, newSegment, replace }) => {

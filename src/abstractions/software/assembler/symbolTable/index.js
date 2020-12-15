@@ -5,9 +5,21 @@ class SymbolTable {
    * creates a symbol table and initialize it with the predifined symbols
    */
   constructor () {
+    this.observers = []
     this.table = {
       ...getPredefinedSymbols()
     }
+  }
+
+  subscribe (observer) {
+    this.observers.push(observer)
+    const index = this.observers.indexOf(observer)
+    this.notify()
+    return () => this.observers.splice(index, 1)
+  }
+
+  notify () {
+    this.observers.forEach(observer => observer(JSON.stringify(this.table)))
   }
 
   /**
@@ -17,7 +29,13 @@ class SymbolTable {
    */
   addEntry (symbol, address) {
     if (this.contains(symbol)) return
-    if (symbol && (address || address === 0)) this.table[symbol] = address
+    if (
+      symbol && (address || address === 0)
+    ) {
+      this.table[symbol] = address
+      this.notify()
+      return
+    }
     return new Error(
       `Error in symbolTable.addEntry. For symbol=${symbol} and address=${address}`)
   }

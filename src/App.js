@@ -12,6 +12,8 @@ import { TealButton } from 'components/Buttons'
 import DrawerItem from 'components/DrawerItem'
 import CPU from 'components/CPU'
 import VmSimulator from 'components/VmSimulator'
+import Assembler from 'components/Assembler'
+import AssemblerSecondPass from 'components/Assembler/SecondPass'
 
 function App () {
   const [visible, setVisible] = useState(false)
@@ -35,6 +37,8 @@ function App () {
           <Route path={ROUTINGS.COMPILER_SECOND_STAGE} component={CompilerSecondStage} />
           <Route path={ROUTINGS.CPU} component={CPU} />
           <Route path={ROUTINGS.VM_TRANSLATOR} component={VmSimulator} />
+          <Route path={ROUTINGS.ASSEMBLER} component={Assembler} />
+          <Route path={ROUTINGS.ASSEMBLER_SECOND_PASS} component={AssemblerSecondPass} />
         </Switch>
       </MainContextProvider>
       <Drawer
@@ -48,6 +52,8 @@ function App () {
         <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_FIRST_STAGE}><DrawerItem bg='black' co='white' text='Compiler I' /></Link>
         <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_SECOND_STAGE}><DrawerItem bg='black' co='white' text='Compiler II' /></Link>
         <Link onClick={closeDrawer} to={ROUTINGS.VM_TRANSLATOR}><DrawerItem bg='black' co='white' text='VM Translator' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.ASSEMBLER}><DrawerItem bg='black' co='white' text='Assembler' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.ASSEMBLER_SECOND_PASS}><DrawerItem bg='black' co='white' text='Assembler II' /></Link>
         <Link onClick={closeDrawer} to={ROUTINGS.CPU}><DrawerItem bg='black' co='white' text='CPU' /></Link>
       </Drawer>
     </div>

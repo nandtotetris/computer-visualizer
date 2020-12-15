@@ -1,11 +1,10 @@
 import styled from 'styled-components'
 
 export const Wrapper = styled.div`
-  padding: 10px;
   display: flex;
   justify-content: center;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 10px;
+  padding-left: 50px;
 `
 
 export const Right = styled.div`

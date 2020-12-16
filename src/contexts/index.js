@@ -24,14 +24,12 @@ class Main {
   
   // Computes R0 = 2 + 3  (R0 refers to RAM[0])
   
-  @age
+  @5
   D=A
-  M=1
-  @3
-  (LOOP1)
+  @6
+  (sum)
   D=D+A
-  @0
-  (LOOP2)
+  @1
   M=D
   `,
   machineCode: '',

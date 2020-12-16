@@ -42,19 +42,18 @@ function App () {
         </Switch>
       </MainContextProvider>
       <Drawer
-        title='Navigation'
         placement='left'
         visible={visible}
         closable={false}
         onClose={closeDrawer}
       >
-        <Link onClick={closeDrawer} to={ROUTINGS.MAIN}><DrawerItem bg='black' co='white' text='Editor' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_FIRST_STAGE}><DrawerItem bg='black' co='white' text='Compiler I' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_SECOND_STAGE}><DrawerItem bg='black' co='white' text='Compiler II' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.VM_TRANSLATOR}><DrawerItem bg='black' co='white' text='VM Translator' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.ASSEMBLER}><DrawerItem bg='black' co='white' text='Assembler' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.ASSEMBLER_SECOND_PASS}><DrawerItem bg='black' co='white' text='Assembler II' /></Link>
-        <Link onClick={closeDrawer} to={ROUTINGS.CPU}><DrawerItem bg='black' co='white' text='CPU' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.MAIN}><DrawerItem bg='white' color='black' text='Editor' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_FIRST_STAGE}><DrawerItem bg='white' color='black' text='Compiler I' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.COMPILER_SECOND_STAGE}><DrawerItem bg='white' color='black' text='Compiler II' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.VM_TRANSLATOR}><DrawerItem bg='white' color='black' text='VM Translator' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.ASSEMBLER}><DrawerItem bg='white' color='black' text='Assembler' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.ASSEMBLER_SECOND_PASS}><DrawerItem bg='white' color='black' text='Assembler II' /></Link>
+        <Link onClick={closeDrawer} to={ROUTINGS.CPU}><DrawerItem bg='white' color='black' text='CPU' /></Link>
       </Drawer>
     </div>
   )

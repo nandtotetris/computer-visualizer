@@ -16,7 +16,7 @@ const CodeMirrorComponent = () => {
       <GlobalStyle />
       <Header>Jack Program</Header>
       <ContentWrapper>
-        <CodeSnippet upCode={JACK_FRAGMENT_CODES.printInt} downCode={JACK_FRAGMENT_CODES.printStirng} />
+        <CodeSnippet upCode={JACK_FRAGMENT_CODES.if} downCode={JACK_FRAGMENT_CODES.printStirng} />
         <CodeMirror
           className='code-mirror'
           autoCursor={false}
@@ -28,7 +28,7 @@ const CodeMirrorComponent = () => {
           }}
           onChange={(editor, data, value) => setJackCode(value)}
         />
-        <CodeSnippet upCode={JACK_FRAGMENT_CODES.printStirng} downCode={JACK_FRAGMENT_CODES.printInt} />
+        <CodeSnippet upCode={JACK_FRAGMENT_CODES.while} downCode={JACK_FRAGMENT_CODES.printInt} />
       </ContentWrapper>
       <Link to={ROUTINGS.COMPILER_FIRST_STAGE}><StartButton>Start Compilation</StartButton></Link>
     </Wrapper>

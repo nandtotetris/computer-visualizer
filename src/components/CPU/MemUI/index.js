@@ -4,13 +4,13 @@ import { SearchOutlined, ClearOutlined, SyncOutlined } from '@ant-design/icons'
 import { Column, Table, AutoSizer } from 'react-virtualized'
 import {
   Header,
-  HeaderWrapper,
   Left,
   Right,
   Wrapper,
   TableWrapper,
   GlobalStyle,
-  ButtonMargin
+  ButtonMargin,
+  HeaderWrapper2
 } from './styled'
 import 'react-virtualized/styles.css'
 import { getAssmFromInstruction } from './util'
@@ -123,7 +123,7 @@ class MemUI extends Component {
       <>
         <GlobalStyle />
         <Wrapper>
-          <HeaderWrapper>
+          <HeaderWrapper2>
             <Left><Header>{type}</Header></Left>
             <Right>
               <Tooltip title='Change mode'>
@@ -159,7 +159,7 @@ class MemUI extends Component {
                 />
               </Modal>
             </Right>
-          </HeaderWrapper>
+          </HeaderWrapper2>
           <TableWrapper>
             <AutoSizer>
               {({ height, width }) => (

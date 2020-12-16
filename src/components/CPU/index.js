@@ -14,6 +14,7 @@ import Decoder from './Decoder'
 import MachineInstruction from './machineInstruction'
 import { SyncOutlined } from '@ant-design/icons'
 import { ButtonMargin } from './MemUI/styled'
+import { MainContext } from 'contexts'
 
 class CpuUI extends Component {
   constructor (props) {
@@ -37,11 +38,11 @@ class CpuUI extends Component {
     this.rom = new ROM32K()
     this.memory = new Memory()
     this.alu = new ALU()
-
-    this.loadCode()
   }
 
   componentDidMount () {
+    this.loadCode()
+
     const { pc } = this.state
     const instruction = this.rom.value(pc)
     this.setState({
@@ -50,6 +51,7 @@ class CpuUI extends Component {
   }
 
   loadCode = () => {
+    const { state: { machineCode } } = this.context
     const maxCode = [
       '0000000000000010',
       '1110110000011000',
@@ -59,7 +61,7 @@ class CpuUI extends Component {
       '1110001100001000'
     ]
 
-    this.rom.load(maxCode)
+    this.rom.load(machineCode || maxCode)
   }
 
   setMemoryIndex = value => this.setState({ memoryIndex: value })
@@ -277,5 +279,7 @@ class CpuUI extends Component {
     )
   }
 }
+
+CpuUI.contextType = MainContext
 
 export default CpuUI

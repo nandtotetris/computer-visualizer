@@ -11,3 +11,9 @@ export const MainWrapper = styled.div`
   justify-content: center;
   margin-top: 10px;
 `
+
+export const NextButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 187px;
+`

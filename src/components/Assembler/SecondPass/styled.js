@@ -18,6 +18,8 @@ export const HeaderWrapper = styled.div`
   justify-content: center;
   margin-bottom: 10px;
   margin-top: 25px;
+  flex-direction: column;
+  align-items: center;
 `
 
 export const NextButtonWrapper = styled.div`

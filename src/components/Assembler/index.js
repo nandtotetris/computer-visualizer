@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import CodeEditor from 'components/CodeEditor'
-import { MainWrapper, NextButtonWrapper, Wrapper } from './styled'
+import { MainWrapper, NextButtonWrapper, Wrapper, SubHeader } from './styled'
 import { MainContext } from 'contexts'
 import SymbolTable from 'abstractions/software/assembler/symbolTable'
 import Writer from 'abstractions/software/assembler/writer'
@@ -27,6 +27,7 @@ class Assembler extends Component {
       <>
         <HeaderWrapper>
           <Header>Assembler first pass</Header>
+          <SubHeader>In this stage Label commands: <b>(LABEL_NAME)</b> will be added in the symbol table</SubHeader>
         </HeaderWrapper>
         <NextButtonWrapper>
           <Link to={ROUTINGS.ASSEMBLER_SECOND_PASS}><TealButton>Next Stage</TealButton></Link>

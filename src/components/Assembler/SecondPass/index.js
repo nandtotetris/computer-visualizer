@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Parser from 'abstractions/software/assembler/parser'
-import { Wrapper, MainWrapper, HeaderWrapper } from './styled'
+import { Wrapper, MainWrapper, HeaderWrapper, NextButtonWrapper } from './styled'
 import Code from 'abstractions/software/assembler/code'
 import SymbolTable from 'abstractions/software/assembler/symbolTable'
 import { COMMAND_TYPE } from 'abstractions/software/assembler/parser/types'
@@ -13,6 +13,8 @@ import { TealButton } from 'components/Buttons'
 import Writer from 'abstractions/software/assembler/writer'
 import InstructionsUI from './Instructions'
 import Header from 'components/Header'
+import { Link } from 'react-router-dom'
+import { ROUTINGS } from 'constants/routing'
 
 const headerStyle = {
   fontWeight: 'normal',
@@ -133,6 +135,9 @@ class SecondPass extends Component {
         <HeaderWrapper>
           <Header>Assembler second pass</Header>
         </HeaderWrapper>
+        <NextButtonWrapper>
+          <Link to={ROUTINGS.CPU}><TealButton>Go to CPU</TealButton></Link>
+        </NextButtonWrapper>
         <MainWrapper>
           <GlobalStyle />
           <SymbolTableUI symbolTable={this.symbolTable} />

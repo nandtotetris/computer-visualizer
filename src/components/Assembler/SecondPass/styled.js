@@ -19,3 +19,9 @@ export const HeaderWrapper = styled.div`
   margin-bottom: 10px;
   margin-top: 25px;
 `
+
+export const NextButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 167px;
+`

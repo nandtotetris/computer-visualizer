@@ -27,6 +27,12 @@ export const HeaderWrapper = styled.div`
   margin-bottom: 15px;
 `
 
+export const HeaderWrapper2 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+`
+
 export const TableWrapper = styled.div`
   height: 720px;
   width: 250px;

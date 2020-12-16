@@ -26,7 +26,7 @@ export const GlobalStyle = createGlobalStyle`
     background-radius: 5px;
   }
 
-  .instruction-table .ant-table .ant-table-tbody > tr:hover > td {
+  .instruction .ant-table .ant-table-tbody > tr:hover > td {
     background: unset;
   }
 `

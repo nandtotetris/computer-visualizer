@@ -21,5 +21,38 @@ class Main {
     return;
   }
 }
+`,
+  if:
+`
+// If statement
+
+class Main {
+  function void main () {
+    if (true) {
+      do Output.printInt(1); // print 1
+    } else {
+      do Output.printInt(2); // print 2
+    }
+    return;
+  }
+}
+`,
+  while:
+`
+// while statement
+
+class Main {
+  function void main () {
+    var int i;
+    
+    let i = 0;
+    while (i < 10) {
+       let i = i + 1;
+       do Output.printInt(i);
+    }
+
+    return i;
+  }
+}
 `
 }

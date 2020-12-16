@@ -125,6 +125,7 @@ class CompilationEngine {
     this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
 
     await this.compileClassVarDec()
+
     await this.compileSubroutine()
     await this.pause()
 
@@ -171,6 +172,7 @@ class CompilationEngine {
     }
     this.assert({ [TOKEN_TYPE.SYMBOL]: ';' })
 
+    this.popScope()
     await this.compileClassVarDec()
   }
 
@@ -200,6 +202,7 @@ class CompilationEngine {
   async compileSubroutine () {
     this.pushScope('compile subroutine')
     await this.pause()
+
     const { tokenizer } = this
     tokenizer.advance()
     const validKeywords = [KEYWORDS.CONSTRUCTOR, KEYWORDS.FUNCTION, KEYWORDS.METHOD]
@@ -568,7 +571,7 @@ class CompilationEngine {
     this.vmWriter.writeIf(endLabel)
 
     this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
-    this.compileStatements()
+    await this.compileStatements()
     this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
 
     this.vmWriter.writeGoto(startLabel)
@@ -617,7 +620,7 @@ class CompilationEngine {
     this.vmWriter.writeLabel(trueLabel)
 
     this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
-    this.compileStatements()
+    await this.compileStatements()
 
     this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
     this.tokenizer.advance()
@@ -627,7 +630,7 @@ class CompilationEngine {
       this.vmWriter.writeLabel(falseLabel)
 
       this.assert({ [TOKEN_TYPE.SYMBOL]: '{' })
-      this.compileStatements()
+      await this.compileStatements()
       this.assert({ [TOKEN_TYPE.SYMBOL]: '}' })
 
       this.vmWriter.writeLabel(endLabel)

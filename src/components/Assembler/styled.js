@@ -17,3 +17,5 @@ export const NextButtonWrapper = styled.div`
   justify-content: flex-end;
   padding-right: 187px;
 `
+
+export const SubHeader = styled.span``

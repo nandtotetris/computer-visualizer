@@ -15,6 +15,7 @@ import InstructionsUI from './Instructions'
 import Header from 'components/Header'
 import { Link } from 'react-router-dom'
 import { ROUTINGS } from 'constants/routing'
+import { SubHeader } from '../styled'
 
 const headerStyle = {
   fontWeight: 'normal',
@@ -134,6 +135,7 @@ class SecondPass extends Component {
       <>
         <HeaderWrapper>
           <Header>Assembler second pass</Header>
+          <SubHeader>This is the main stage to compile an assembly code to a machine code</SubHeader>
         </HeaderWrapper>
         <NextButtonWrapper>
           <Link to={ROUTINGS.CPU}><TealButton>Go to CPU</TealButton></Link>
